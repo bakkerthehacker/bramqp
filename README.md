@@ -23,7 +23,7 @@ npm install bramqp
 or
 
 ```
-npm install git+https://github.com/bakkerthehacker/bramqp.git#implement
+npm install git+https://github.com/bakkerthehacker/bramqp.git
 ```
 
 ## Usage
