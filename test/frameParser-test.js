@@ -589,14 +589,147 @@ vows.describe('frameParser').addBatch(
 					topic : function(parser) {
 						return parser.parseVoid.bind(parser);
 					},
-					'' : function(parse) {
+					'<empty Buffer>' : function(parse) {
 						var buffer = new Buffer([]);
 						buffer.read = 0;
 						var value = parse(buffer);
 						assert.isUndefined(value);
 					}
 				},
-				'should properly parse Array' : {},
-				'should properly parse Table' : {}
+				'should properly parse Array' : {
+					topic : function(parser) {
+						return parser.parseArray.bind(parser);
+					},
+					'0x00, 0x00, 0x00, 0x00' : function(parse) {
+						var buffer = new Buffer([ 0x00, 0x00, 0x00, 0x00 ]);
+						buffer.read = 0;
+						var value = parse(buffer);
+						assert.deepEqual(value, []);
+					},
+					'0x00, 0x00, 0x00, 0x03, 0x56, 0x62, 0x31' : function(parse) {
+						var buffer = new Buffer([ 0x00, 0x00, 0x00, 0x03, 0x56, 0x62, 0x31 ]);
+
+						buffer.read = 0;
+						var value = parse(buffer);
+						assert.deepEqual(value, [ undefined, 49 ]);
+					}
+				},
+				'should properly parse Table' : {
+					topic : function(parser) {
+						return parser.parseTable.bind(parser);
+					},
+					'0x00, 0x00, 0x00, 0x00' : function(parse) {
+						var buffer = new Buffer([ 0x00, 0x00, 0x00, 0x00 ]);
+						buffer.read = 0;
+						var value = parse(buffer);
+						assert.deepEqual(value, {});
+					},
+					'0x00, 0x00, 0x00, 0x03, 0x04, 0x74, 0x65, 0x73, 0x74, 0x62, 0x31' : function(parse) {
+						var buffer = new Buffer([ 0x00, 0x00, 0x00, 0x03, 0x04, 0x74, 0x65, 0x73, 0x74, 0x62, 0x31 ]);
+						buffer.read = 0;
+						var value = parse(buffer);
+						assert.deepEqual(value, {
+							test : 49
+						});
+					}
+				},
+				'should properly parse Value' : {
+					topic : function(parser) {
+						return parser.parseValue.bind(parser);
+					},
+					'0x74, 0x01' : function(parse) {
+						var buffer = new Buffer([ 0x74, 0x01 ]);
+						buffer.read = 0;
+						var value = parse(buffer);
+						assert.strictEqual(value, true);
+					},
+					'0x62, 0x03' : function(parse) {
+						var buffer = new Buffer([ 0x62, 0x03 ]);
+						buffer.read = 0;
+						var value = parse(buffer);
+						assert.strictEqual(value, 3);
+					},
+					'0x73, 0xff, 0xf1' : function(parse) {
+						var buffer = new Buffer([ 0x73, 0xff, 0xf1 ]);
+						buffer.read = 0;
+						var value = parse(buffer);
+						assert.strictEqual(value, -15);
+					},
+					'0x49, 0xff, 0xf1, 0x2a, 0x91' : function(parse) {
+						var buffer = new Buffer([ 0x49, 0xff, 0xf1, 0x2a, 0x91 ]);
+						buffer.read = 0;
+						var value = parse(buffer);
+						assert.strictEqual(value, -972143);
+					},
+					'0x6c, 0x00, 0x00, 0xa3, 0xd6, 0x23, 0xfe, 0x19, 0x12' : function(parse) {
+						var buffer = new Buffer([ 0x6c, 0x00, 0x00, 0xa3, 0xd6, 0x23, 0xfe, 0x19, 0x12 ]);
+						buffer.read = 0;
+						var value = parse(buffer);
+						assert.strictEqual(value, 180140122183954);
+					},
+					'0x66, 0x1a, 0xf1, 0x2a, 0x91' : function(parse) {
+						var buffer = new Buffer([ 0x66, 0x1a, 0xf1, 0x2a, 0x91 ]);
+						buffer.read = 0;
+						var value = parse(buffer);
+						assert.strictEqual(value, 9.974403355091338e-23);
+					},
+					'0x64, 0x00, 0x00, 0xa3, 0xd6, 0x23, 0xfe, 0x19, 0x12' : function(parse) {
+						var buffer = new Buffer([ 0x64, 0x00, 0x00, 0xa3, 0xd6, 0x23, 0xfe, 0x19, 0x12 ]);
+						buffer.read = 0;
+						var value = parse(buffer);
+						assert.strictEqual(value, 8.90010458087363e-310);
+					},
+					'0x44, 0x02, 0x00, 0x00, 0x01, 0x5e' : function(parse) {
+						var buffer = new Buffer([ 0x44, 0x02, 0x00, 0x00, 0x01, 0x5e ]);
+						buffer.read = 0;
+						var value = parse(buffer);
+						assert.strictEqual(value, 3.50);
+					},
+					'0x53, 0x00, 0x00, 0x00, 0x08, 0x77, 0x75, 0x74, 0x74, 0x77, 0x75, 0x74, 0x74' : function(parse) {
+						var buffer = new Buffer([ 0x53, 0x00, 0x00, 0x00, 0x08, 0x77, 0x75, 0x74, 0x74, 0x77, 0x75,
+								0x74, 0x74 ]);
+						buffer.read = 0;
+						var value = parse(buffer);
+						assert.strictEqual(value, 'wuttwutt');
+					},
+					'0x41, 0x00, 0x00, 0x00, 0x03, 0x56, 0x62, 0x31' : function(parse) {
+						var buffer = new Buffer([ 0x41, 0x00, 0x00, 0x00, 0x03, 0x56, 0x62, 0x31 ]);
+						buffer.read = 0;
+						var value = parse(buffer);
+						assert.deepEqual(value, [ undefined, 49 ]);
+					},
+					'0x54, 0x00, 0x00, 0x00, 0x00, 0x52, 0x85, 0x25, 0x69' : function(parse) {
+						var buffer = new Buffer([ 0x54, 0x00, 0x00, 0x00, 0x00, 0x52, 0x85, 0x25, 0x69 ]);
+						buffer.read = 0;
+						var value = parse(buffer);
+						assert.strictEqual(value.getTime(), new Date('Thu, 14 Nov 2013 19:32:57 GMT').getTime());
+					},
+					'0x46, 0x00, 0x00, 0x00, 0x03, 0x04, 0x74, 0x65, 0x73, 0x74, 0x62, 0x31' : function(parse) {
+						var buffer = new Buffer([ 0x46, 0x00, 0x00, 0x00, 0x03, 0x04, 0x74, 0x65, 0x73, 0x74, 0x62,
+								0x31 ]);
+						buffer.read = 0;
+						var value = parse(buffer);
+						assert.deepEqual(value, {
+							test : 49
+						});
+					},
+					'0x56' : function(parse) {
+						var buffer = new Buffer([ 0x56 ]);
+						buffer.read = 0;
+						var value = parse(buffer);
+						assert.strictEqual(value, undefined);
+					},
+					'0x78, 0x00, 0x00, 0x00, 0x08, 0x01, 0x23, 0x45, 0x67, 0x89, 0xab, 0xcd, 0xef' : function(parse) {
+						var buffer = new Buffer([ 0x78, 0x00, 0x00, 0x00, 0x08, 0x01, 0x23, 0x45, 0x67, 0x89, 0xab,
+								0xcd, 0xef ]);
+						buffer.read = 0;
+						var value = parse(buffer);
+						var testValue = new Buffer([ 0x01, 0x23, 0x45, 0x67, 0x89, 0xab, 0xcd, 0xef ]);
+						assert.strictEqual(value.length, testValue.length);
+						for ( var i = 0; i < 8; i++) {
+							assert.strictEqual(value[i], testValue[i]);
+						}
+					},
+				}
 			}
 		}).export(module);
