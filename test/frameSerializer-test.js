@@ -236,8 +236,15 @@ vows.describe('frameSerializer').addBatch(
 						serialize(buffer, value);
 						assert.strictEqual(buffer.toString('hex'), '0000000000000003');
 					},
-					'244286446867952679' : function(serialize) {
-						var value = 244286446867952679;
+					'1092066989945895' : function(serialize) {
+						var value = 1092066989945895;
+						var buffer = new Buffer(8);
+						buffer.used = 0;
+						serialize(buffer, value);
+						assert.strictEqual(buffer.toString('hex'), '0003e13aa901b427');
+					},
+					'\'0363e13aa901b429\'' : function(serialize) {
+						var value = '0363e13aa901b427';
 						var buffer = new Buffer(8);
 						buffer.used = 0;
 						serialize(buffer, value);
@@ -245,6 +252,13 @@ vows.describe('frameSerializer').addBatch(
 					},
 					'18446744073709551615' : function(serialize) {
 						var value = 18446744073709551615;
+						var buffer = new Buffer(8);
+						buffer.used = 0;
+						serialize(buffer, value);
+						assert.strictEqual(buffer.toString('hex'), 'ffffffffffffffff');
+					},
+					'\'ffffffffffffffff\'' : function(serialize) {
+						var value = 'ffffffffffffffff';
 						var buffer = new Buffer(8);
 						buffer.used = 0;
 						serialize(buffer, value);
@@ -276,8 +290,15 @@ vows.describe('frameSerializer').addBatch(
 						serialize(buffer, value);
 						assert.strictEqual(buffer.toString('hex'), 'fffffffffffffffd');
 					},
-					'244286446867952679' : function(serialize) {
-						var value = 244286446867952679;
+					'1092066989945895' : function(serialize) {
+						var value = 1092066989945895;
+						var buffer = new Buffer(8);
+						buffer.used = 0;
+						serialize(buffer, value);
+						assert.strictEqual(buffer.toString('hex'), '0003e13aa901b427');
+					},
+					'\'0363e13aa901b429\'' : function(serialize) {
+						var value = '0363e13aa901b427';
 						var buffer = new Buffer(8);
 						buffer.used = 0;
 						serialize(buffer, value);
@@ -285,6 +306,13 @@ vows.describe('frameSerializer').addBatch(
 					},
 					'-1' : function(serialize) {
 						var value = -1;
+						var buffer = new Buffer(8);
+						buffer.used = 0;
+						serialize(buffer, value);
+						assert.strictEqual(buffer.toString('hex'), 'ffffffffffffffff');
+					},
+					'\'ffffffffffffffff\'' : function(serialize) {
+						var value = 'ffffffffffffffff';
 						var buffer = new Buffer(8);
 						buffer.used = 0;
 						serialize(buffer, value);
@@ -610,6 +638,106 @@ vows.describe('frameSerializer').addBatch(
 						buffer.used = 0;
 						serialize(buffer, value);
 						assert.strictEqual(buffer.toString('hex'), '0000000000');
+					}
+				},
+				'should properly serialize Timestamp' : {
+					topic : function(serializer) {
+						return serializer.serializeTimestamp.bind(serializer);
+					},
+					'Thu, 01 Jan 1970 00:00:00 GMT' : function(serialize) {
+						var value = new Date('Thu, 01 Jan 1970 00:00:00 GMT');
+						var buffer = new Buffer(8);
+						buffer.used = 0;
+						serialize(buffer, value);
+						assert.strictEqual(buffer.toString('hex'), '0000000000000000');
+					},
+					'Wed, 31 Dec 1969 23:59:59 GMT' : function(serialize) {
+						var value = new Date('Wed, 31 Dec 1969 23:59:59 GMT');
+						var buffer = new Buffer(8);
+						buffer.used = 0;
+						serialize(buffer, value);
+						assert.strictEqual(buffer.toString('hex'), 'ffffffffffffffff');
+					},
+					'undefined' : function(serialize) {
+						var value = undefined;
+						var buffer = new Buffer(8);
+						buffer.used = 0;
+						serialize(buffer, value);
+						assert.notStrictEqual(buffer.toString('hex'), '0000000000000000');
+						// TODO test correct value
+					}
+				},
+				'should properly serialize Short String' : {
+					topic : function(serializer) {
+						return serializer.serializeShortString.bind(serializer);
+					},
+					'\'Hello World!\'' : function(serialize) {
+						var value = 'Hello World!';
+						var buffer = new Buffer(13);
+						buffer.used = 0;
+						serialize(buffer, value);
+						assert.strictEqual(buffer.toString('hex'), '0c48656c6c6f20576f726c6421');
+					},
+					'\'\'' : function(serialize) {
+						var value = '';
+						var buffer = new Buffer(1);
+						buffer.used = 0;
+						serialize(buffer, value);
+						assert.strictEqual(buffer.toString('hex'), '00');
+					},
+					'undefined' : function(serialize) {
+						var value = undefined;
+						var buffer = new Buffer(1);
+						buffer.used = 0;
+						serialize(buffer, value);
+						assert.strictEqual(buffer.toString('hex'), '00');
+					}
+				},
+				'should properly serialize Long String' : {
+					topic : function(serializer) {
+						return serializer.serializeLongString.bind(serializer);
+					},
+					'\'Lorem ipsum dolor sit amet...\'' : function(serialize) {
+						var value = 'Lorem ipsum dolor sit amet, consectetur '
+								+ 'adipiscing elit. Pellentesque mattis sollicitudin nibh vel tincidunt. '
+								+ 'Nunc at nunc consequat, rutrum purus in, venenatis risus. Donec libero '
+								+ 'lorem, tincidunt vel leo eget, fermentum accumsan risus. Donec mauris '
+								+ 'mauris, eleifend in leo sed, vestibulum dictum ante. Vivamus bibendum '
+								+ 'venenatis nisi ut elementum. Donec ultricies commodo laoreet. Maecenas '
+								+ 'facilisis nunc at pretium tristique. Donec elit lectus, dictum id felis '
+								+ 'ac, lacinia tincidunt erat volutpat. ';
+						var buffer = new Buffer(505);
+						buffer.used = 0;
+						serialize(buffer, value);
+						assert.strictEqual(buffer.toString('hex'), '000001f54c6f72656d20697073756d20646'
+								+ 'f6c6f722073697420616d65742c20636f6e73656374657475722061646970697363696e'
+								+ '6720656c69742e2050656c6c656e746573717565206d617474697320736f6c6c6963697'
+								+ '47564696e206e6962682076656c2074696e636964756e742e204e756e63206174206e75'
+								+ '6e6320636f6e7365717561742c2072757472756d20707572757320696e2c2076656e656'
+								+ 'e617469732072697375732e20446f6e6563206c696265726f206c6f72656d2c2074696e'
+								+ '636964756e742076656c206c656f20656765742c206665726d656e74756d20616363756'
+								+ 'd73616e2072697375732e20446f6e6563206d6175726973206d61757269732c20656c65'
+								+ '6966656e6420696e206c656f207365642c20766573746962756c756d2064696374756d2'
+								+ '0616e74652e20566976616d757320626962656e64756d2076656e656e61746973206e69'
+								+ '736920757420656c656d656e74756d2e20446f6e656320756c7472696369657320636f6'
+								+ 'd6d6f646f206c616f726565742e204d616563656e617320666163696c69736973206e75'
+								+ '6e63206174207072657469756d207472697374697175652e20446f6e656320656c69742'
+								+ '06c65637475732c2064696374756d2069642066656c69732061632c206c6163696e6961'
+								+ '2074696e636964756e74206572617420766f6c75747061742e20');
+					},
+					'\'\'' : function(serialize) {
+						var value = '';
+						var buffer = new Buffer(4);
+						buffer.used = 0;
+						serialize(buffer, value);
+						assert.strictEqual(buffer.toString('hex'), '00000000');
+					},
+					'undefined' : function(serialize) {
+						var value = undefined;
+						var buffer = new Buffer(4);
+						buffer.used = 0;
+						serialize(buffer, value);
+						assert.strictEqual(buffer.toString('hex'), '00000000');
 					}
 				}
 			}
