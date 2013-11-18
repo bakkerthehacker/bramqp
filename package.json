@@ -27,7 +27,7 @@
 		"vows": "~0.7.0"
 	},
 	"scripts": {
-		"test": "vows --spec --isolate"
+		"test": "vows --spec"
 	},
 	"engines" : {
 		"node" : ">= 0.10.0"
