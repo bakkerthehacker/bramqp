@@ -285,7 +285,6 @@ vows
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), '0000000000000003');
 							},
-							// TODO fix this test
 							'-3' : function(serialize) {
 								var value = -3;
 								var buffer = new Buffer(8);
@@ -307,7 +306,6 @@ vows
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), '0363e13aa901b427');
 							},
-							// TODO fix this test
 							'-1' : function(serialize) {
 								var value = -1;
 								var buffer = new Buffer(8);
@@ -655,7 +653,6 @@ vows
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), '0000000000000000');
 							},
-							// TODO fix this test
 							'Wed, 31 Dec 1969 23:59:59 GMT' : function(serialize) {
 								var value = new Date('Wed, 31 Dec 1969 23:59:59 GMT');
 								var buffer = new Buffer(8);
