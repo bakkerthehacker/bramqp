@@ -2,6 +2,8 @@
 
 A rad, raw, robust, remarkable AMQP library for node.js
 
+[![Build Status](https://travis-ci.org/bakkerthehacker/bramqp.png?branch=tests)](https://travis-ci.org/bakkerthehacker/bramqp)
+
 ## Benefits over existing AMQP libraries
 
 - Dynamically loaded specification from xml
