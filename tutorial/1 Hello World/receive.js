@@ -24,7 +24,7 @@ bramqp.selectSpecification('rabbitmq/full/amqp0-9-1.stripped.extended', function
 					console.log('consuming from queue');
 					console.log(data);
 					handle.on('basic.deliver', function(channel, method, data) {
-						console.log('incomming message');
+						console.log('incoming message');
 						console.log(data);
 						handle.once('content', function(channel, className, properties, content) {
 							console.log('got a message:');
