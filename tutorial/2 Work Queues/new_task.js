@@ -19,14 +19,8 @@ bramqp.selectSpecification('rabbitmq/full/amqp0-9-1.stripped.extended', function
 					seriesCallback();
 				});
 			}, function(seriesCallback) {
-				message = 'Hello World!';
-				handle.basic.publish(1, '', 'task_queue', true, false, function() {
-					handle.content(1, 'basic', {
-						delivery_mode : 2
-					}, message, seriesCallback);
-				});
-			}, function(seriesCallback) {
-				message = '.';
+				var args = process.argv.splice(2);
+				var message = args.length ? args.join(' ') : 'Hello World!';
 				handle.basic.publish(1, '', 'task_queue', true, false, function() {
 					handle.content(1, 'basic', {
 						delivery_mode : 2
