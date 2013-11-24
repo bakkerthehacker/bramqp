@@ -287,3 +287,9 @@ The `handle` provides additional functions which perform common but complicated 
 - close channel 1
 - close the amqp connection
 - stop the heartbeats
+
+#### handle.setFrameMax(frameMax)
+  
+- `frameMax` The new largest frame that should be used;
+
+`setFrameMax` updates the size of the buffers used for AMQP communication.  Should be called after receiving `connection.tune` method.
