@@ -13,18 +13,17 @@ bramqp.selectSpecification('rabbitmq/full/amqp0-9-1.stripped.extended', function
 			async.series([ function(seriesCallback) {
 				handle.openAMQPCommunication('guest', 'guest', true, seriesCallback);
 			}, function(seriesCallback) {
-				handle.queue.declare(1, 'task_queue', false, true, false, false, false, {});
-				handle.once('queue.declare-ok', function(channel, method, data) {
-					console.log('queue declared');
+				handle.exchange.declare(1, 'direct_logs', 'direct');
+				handle.once('exchange.declare-ok', function(channel, method, data) {
+					console.log('exchange declared');
 					seriesCallback();
 				});
 			}, function(seriesCallback) {
 				var args = process.argv.splice(2);
+				var severity = args.length ? args.shift() : 'info';
 				var message = args.length ? args.join(' ') : 'Hello World!';
-				handle.basic.publish(1, '', 'task_queue', false, false, function() {
-					handle.content(1, 'basic', {
-						delivery_mode : 2
-					}, message, seriesCallback);
+				handle.basic.publish(1, 'direct_logs', severity, false, false, function() {
+					handle.content(1, 'basic', {}, message, seriesCallback);
 				});
 			}, function(seriesCallback) {
 				handle.closeAMQPCommunication(seriesCallback);

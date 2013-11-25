@@ -2,7 +2,7 @@
 
 A rad, raw, robust, remarkable AMQP library for node.js
 
-[![Build Status](https://travis-ci.org/bakkerthehacker/bramqp.png?branch=master)](https://travis-ci.org/bakkerthehacker/bramqp)
+[![NPM version](https://badge.fury.io/js/bramqp.png)](http://badge.fury.io/js/bramqp) [![Build Status](https://travis-ci.org/bakkerthehacker/bramqp.png?branch=master)](https://travis-ci.org/bakkerthehacker/bramqp)
 
 ## Benefits over existing AMQP libraries
 
@@ -287,3 +287,9 @@ The `handle` provides additional functions which perform common but complicated 
 - close channel 1
 - close the amqp connection
 - stop the heartbeats
+
+#### handle.setFrameMax(frameMax)
+  
+- `frameMax` The new largest frame that should be used;
+
+`setFrameMax` updates the size of the buffers used for AMQP communication.  Should be called after receiving `connection.tune` method.
