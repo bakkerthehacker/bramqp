@@ -28,6 +28,8 @@ or
 npm install git+https://github.com/bakkerthehacker/bramqp.git
 ```
 
+## [Tutorials](tutorial/TUTORIAL.md)
+
 ## Usage
 
 Before using bramqp, the module must be required, the specification loaded, and a socket initialized.
