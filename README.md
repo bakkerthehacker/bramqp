@@ -1,6 +1,6 @@
-# bakkerthehacker's radical AMQP library
+# bakkerthehacker's rectangular AMQP library
 
-A rad, raw, robust, remarkable AMQP library for node.js
+A radical, raw, robust, remarkable AMQP library for node.js
 
 [![NPM version](https://badge.fury.io/js/bramqp.png)](http://badge.fury.io/js/bramqp) [![Build Status](https://travis-ci.org/bakkerthehacker/bramqp.png?branch=master)](https://travis-ci.org/bakkerthehacker/bramqp)
 
