@@ -271,20 +271,22 @@ Errors can occur in a variety of different scenarios, and need to be handled acc
 - Finally errors can occur when methods are called. These errors are also passed back as the first argument to the callback for the given method.
 
 Handling Errors in setting up of the connection
-```bramqp.selectSpecification('rabbitmq/full/amqp0-9-1.stripped.extended', function(error) {
-	if (error) {
-		return console.log(util.inspect(error));
-	}
-	var socket = net.connect({
-		port : 5672,
-	}, function() {
-		bramqp.initializeSocket(socket, function(error, handle) {
-			handle.on('error', function(error){
-				console.log("caught handle error");
-				throw(error);
-			});
-	});
-});```
+```javascript
+bramqp.selectSpecification('rabbitmq/full/amqp0-9-1.stripped.extended', function(error) {
+    if (error) {
+        return console.log(util.inspect(error));
+    }
+    var socket = net.connect({
+    port : 5672,
+    }, function() {
+        bramqp.initializeSocket(socket, function(error, handle) {
+            handle.on('error', function(error){
+                console.log("caught handle error");
+                throw(error);
+            });
+    });
+});
+```
 
 
 
