@@ -384,7 +384,7 @@ vows.describe('frameParser').addBatch(
 						var buffer = new Buffer([ 0x00 ]);
 						buffer.read = 0;
 						var value = [];
-						for ( var i = 0; i < 8; i++) {
+						for (var i = 0; i < 8; i++) {
 							value[i] = parse(buffer, i);
 						}
 						assert.deepEqual(value, [ false, false, false, false, false, false, false, false ]);
@@ -393,7 +393,7 @@ vows.describe('frameParser').addBatch(
 						var buffer = new Buffer([ 0xff ]);
 						buffer.read = 0;
 						var value = [];
-						for ( var i = 0; i < 8; i++) {
+						for (var i = 0; i < 8; i++) {
 							value[i] = parse(buffer, i);
 						}
 						assert.deepEqual(value, [ true, true, true, true, true, true, true, true ]);
@@ -402,7 +402,7 @@ vows.describe('frameParser').addBatch(
 						var buffer = new Buffer([ 0xab ]);
 						buffer.read = 0;
 						var value = [];
-						for ( var i = 0; i < 8; i++) {
+						for (var i = 0; i < 8; i++) {
 							value[i] = parse(buffer, i);
 						}
 						assert.deepEqual(value, [ true, true, false, true, false, true, false, true ]);
@@ -411,7 +411,7 @@ vows.describe('frameParser').addBatch(
 						var buffer = new Buffer([ 0xab, 0xab ]);
 						buffer.read = 0;
 						var value = [];
-						for ( var i = 0; i < 10; i++) {
+						for (var i = 0; i < 10; i++) {
 							value[i] = parse(buffer, i);
 						}
 						assert.deepEqual(value, [ true, true, false, true, false, true, false, true, true, true ]);
@@ -421,7 +421,7 @@ vows.describe('frameParser').addBatch(
 						var buffer = new Buffer([ 0xab, 0xab ]);
 						buffer.read = 0;
 						var value = [];
-						for ( var i = 0; i < 16; i++) {
+						for (var i = 0; i < 16; i++) {
 							value[i] = parse(buffer, i);
 						}
 						assert.deepEqual(value, [ true, true, false, true, false, true, false, true, true, true, false,
@@ -718,7 +718,7 @@ vows.describe('frameParser').addBatch(
 						var value = parse(buffer);
 						var testValue = new Buffer([ 0x01, 0x23, 0x45, 0x67, 0x89, 0xab, 0xcd, 0xef ]);
 						assert.strictEqual(value.length, testValue.length);
-						for ( var i = 0; i < 8; i++) {
+						for (var i = 0; i < 8; i++) {
 							assert.strictEqual(value[i], testValue[i]);
 						}
 					},

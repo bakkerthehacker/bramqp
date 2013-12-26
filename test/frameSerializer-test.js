@@ -540,7 +540,7 @@ vows
 								var value = [ false, false, false, false, false, false, false, false ];
 								var buffer = new Buffer(1);
 								buffer.used = 0;
-								for ( var i = 0; i < 8; i++) {
+								for (var i = 0; i < 8; i++) {
 									serialize(buffer, value[i], i);
 								}
 								assert.strictEqual(buffer.toString('hex'), '00');
@@ -549,7 +549,7 @@ vows
 								var value = [ true, true, true, true, true, true, true, true ];
 								var buffer = new Buffer(1);
 								buffer.used = 0;
-								for ( var i = 0; i < 8; i++) {
+								for (var i = 0; i < 8; i++) {
 									serialize(buffer, value[i], i);
 								}
 								assert.strictEqual(buffer.toString('hex'), 'ff');
@@ -558,7 +558,7 @@ vows
 								var value = [ true, true, false, true, false, true, false, true ];
 								var buffer = new Buffer(1);
 								buffer.used = 0;
-								for ( var i = 0; i < 8; i++) {
+								for (var i = 0; i < 8; i++) {
 									serialize(buffer, value[i], i);
 								}
 								assert.strictEqual(buffer.toString('hex'), 'ab');
@@ -567,7 +567,7 @@ vows
 								var value = [ true, true, false, true, false, true, false, true, true, true ];
 								var buffer = new Buffer(2);
 								buffer.used = 0;
-								for ( var i = 0; i < 10; i++) {
+								for (var i = 0; i < 10; i++) {
 									serialize(buffer, value[i], i);
 								}
 								assert.strictEqual(buffer.toString('hex'), 'ab03');
@@ -577,7 +577,7 @@ vows
 										true, false, true, false, true ];
 								var buffer = new Buffer(2);
 								buffer.used = 0;
-								for ( var i = 0; i < 16; i++) {
+								for (var i = 0; i < 16; i++) {
 									serialize(buffer, value[i], i);
 								}
 								assert.strictEqual(buffer.toString('hex'), 'abab');
