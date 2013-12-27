@@ -1,4 +1,4 @@
-# bakkerthehacker's rectangular AMQP library
+# bakkerthehacker's rapid AMQP library
 
 A radical, raw, robust, remarkable AMQP library for node.js
 
