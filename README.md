@@ -157,6 +157,41 @@ handle.on('exchange.declare-ok', function(channel, method, data) {
 });
 ```
 
+Sending and receiving methods can also use more general interface.
+The previous specific interface simply calls this general interface and both function identically.
+This interface is provided for convenience and should only be used in special circumstances, such as logging all incoming methods.
+
+#### handle.method(channel, className, methodName, data, [callback(error)])
+
+- `channel` The AMQP channel to send the method on.
+The channel MUST be `0` when the class is `connection` and MUST NOT be `0` otherwise.
+- `className` The name of the class that the method belongs to.
+- `methodName` The name of the method being called.
+- `data` An object containing the arguments as specified by the AMQP method. 
+- `callback(error)` Called once the method has been written to the socket.
+
+#### Event: 'method'
+
+- `channel` The channel the method was received on.
+- `className` The name of the class that the method belongs to.
+- `method` An object containing information about the method called. This is essentially a javascript version of the method as it appears in the xml specification.
+- `data` An object containing the argument values.
+
+Example:
+
+```javascript
+handle.method(1, 'exchange', 'declare', {'exchange-name' : 'exchange-name', 'type' : 'topic'}, function(methodError){
+	if (methodError) {
+		console.log(methodError);
+	}
+	console.log('declare method sent');
+});
+
+handle.on('method', function(channel, className, method, data) {
+	console.log('incoming method: ' + className + '.' + method.name);
+});
+```
+
 ### Content
 
 When sending a message, the message body is sent separately as content. It is sent to a class,
@@ -227,7 +262,7 @@ The methods `connection.tune` and `connection.tune-ok` determine if and how ofte
 
 If two heartbeats are sent without receiving a heartbeat from the server, then the server is considered unreachable.
 
-Heartbeats can be send by calling `heartbeat`.
+Heartbeats can be sent by calling `heartbeat`.
 
 #### handle.heartbeat(callback(error))
 
