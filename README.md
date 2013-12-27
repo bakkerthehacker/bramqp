@@ -157,7 +157,7 @@ handle.on('exchange.declare-ok', function(channel, method, data) {
 });
 ```
 
-Sending and receiving methods can also use more general interface.
+Sending and receiving methods can also use a more general interface.
 The previous specific interface simply calls this general interface and both function identically.
 This interface is provided for convenience and should only be used in special circumstances, such as logging all incoming methods.
 
