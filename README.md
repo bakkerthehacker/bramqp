@@ -2,7 +2,10 @@
 
 A radical, raw, robust, remarkable AMQP library for node.js
 
-[![NPM version](https://badge.fury.io/js/bramqp.png)](http://badge.fury.io/js/bramqp) [![Build Status](https://travis-ci.org/bakkerthehacker/bramqp.png?branch=master)](https://travis-ci.org/bakkerthehacker/bramqp)
+[![NPM version](https://badge.fury.io/js/bramqp.png)](http://badge.fury.io/js/bramqp)
+[![Build Status](https://travis-ci.org/bakkerthehacker/bramqp.png?branch=master)](https://travis-ci.org/bakkerthehacker/bramqp)
+[![Dependency Status](https://david-dm.org/bakkerthehacker/bramqp.png)](https://david-dm.org/bakkerthehacker/bramqp)
+[![devDependency Status](https://david-dm.org/bakkerthehacker/bramqp/dev-status.png)](https://david-dm.org/bakkerthehacker/bramqp#info=devDependencies)
 
 ## Benefits over existing AMQP libraries
 
