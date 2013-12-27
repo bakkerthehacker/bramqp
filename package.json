@@ -21,7 +21,7 @@
 	},
 	"dependencies" : {
 		"async" : "~0.2.9",
-		"xml2js" : "~0.2.8"
+		"xml2js" : "~0.4.0"
 	},
 	"devDependencies": {
 		"vows": "~0.7.0"
