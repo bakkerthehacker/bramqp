@@ -6,3 +6,4 @@
 - [Heartbeat](Heartbeat.md)
 - [Other Handle Functions](OtherHandleFunctions.md)
 - [Handling Errors](HandlingErrors.md)
+- [Value Types](Value Types.md)
