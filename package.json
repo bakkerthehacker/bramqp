@@ -1,6 +1,6 @@
 {
 	"name" : "bramqp",
-	"version" : "0.1.6",
+	"version" : "0.1.7",
 	"description" : "bakkerthehacker's rapid AMQP library",
 	"keywords" : [ "amqp", "bramqp" ],
 	"homepage" : "http://github.com/bakkerthehacker/bramqp",
@@ -21,7 +21,8 @@
 	},
 	"dependencies" : {
 		"async" : "~0.2.9",
-		"xml2js" : "~0.4.0"
+		"xml2js" : "~0.4.0",
+		"buffer-more-ints" : "~0.0.2"
 	},
 	"devDependencies": {
 		"vows": "~0.7.0"
