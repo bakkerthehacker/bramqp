@@ -5,5 +5,5 @@
 - [Content](Content.md)
 - [Heartbeat](Heartbeat.md)
 - [Other Handle Functions](OtherHandleFunctions.md)
-- [Handling Errors](HandlingErrors.md)
+- [Errors and Exceptions](Errors and Exceptions.md)
 - [Value Types](Value Types.md)

@@ -1,4 +1,4 @@
-# Handling Errors
+# Errors
 
 Errors can occur in a variety of different scenarios, and need to be handled accordingly.
 
@@ -25,3 +25,9 @@ bramqp.selectSpecification('rabbitmq/full/amqp0-9-1.stripped.extended', function
     });
 });
 ```
+
+# Exceptions
+
+Exceptions are different from errors. An exception is not a problem with any files or sockets. Instead, the AMQP server may raise an exception as a result of incorrect or illegal data in the messages sent or as a result of an error in the operation of the AMQP server. This may include attempting to access a queue or exchange that does not exists, sending content when it is not expected, or any other exception defined in the specification. 
+
+Exceptions are sent by closing either the channel or connection where the issue occurred. The `openAMQPCommunication` function will re-open a closed channel but will not re-open a closed connection. For more details, see the documentation for [connection.close](https://www.rabbitmq.com/amqp-0-9-1-reference.html#connection.close) and [channel.close](https://www.rabbitmq.com/amqp-0-9-1-reference.html#channel.close).
