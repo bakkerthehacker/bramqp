@@ -11,7 +11,7 @@ Requiring allows your node application to use bramqp, but you already knew that.
 ## Specification
 
 To support multiple protocols, bramqp needs to load an xml specification.
-For adding new specifications, see [Adding specifications](#adding-specifications).
+For adding new specifications, see [Specification](Specification.md).
 
 #### bramqp.selectSpecification(specification, [callback(error)])
 
