@@ -1,6 +1,6 @@
 {
 	"name" : "bramqp",
-	"version" : "0.1.7",
+	"version" : "0.1.8",
 	"description" : "bakkerthehacker's rapid AMQP library",
 	"keywords" : [ "amqp", "bramqp" ],
 	"homepage" : "http://github.com/bakkerthehacker/bramqp",
