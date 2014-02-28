@@ -12,7 +12,7 @@ vows
 		.describe('frameSerializer')
 		.addBatch(
 				{
-					'The AMQP frame serializer' : {
+					'The AMQP 0-9-1-extended' : {
 						topic : function() {
 							var self = this;
 							specification.selectSpecification('rabbitmq/full/amqp0-9-1.stripped.extended', function() {
@@ -22,521 +22,586 @@ vows
 								});
 							});
 						},
-						'should properly serialize Octet' : {
+						'Octet serializer' : {
 							topic : function(serializer) {
 								return serializer.serializeOctet.bind(serializer);
 							},
-							'3' : function(serialize) {
+							'should serialize 3' : function(serialize) {
 								var value = 3;
 								var buffer = new Buffer(1);
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), '03');
+								assert.strictEqual(buffer.used, 1);
 							},
-							'255' : function(serialize) {
+							'should serialize 255' : function(serialize) {
 								var value = 255;
 								var buffer = new Buffer(1);
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), 'ff');
+								assert.strictEqual(buffer.used, 1);
 							},
-							'undefined' : function(serialize) {
+							'should serialize undefined' : function(serialize) {
 								var value = undefined;
 								var buffer = new Buffer(1);
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), '00');
+								assert.strictEqual(buffer.used, 1);
 							}
 						},
-						'should properly serialize Signed Octet' : {
+						'Signed Octet serializer' : {
 							topic : function(serializer) {
 								return serializer.serializeSignedOctet.bind(serializer);
 							},
-							'3' : function(serialize) {
+							'should serialize 3' : function(serialize) {
 								var value = 3;
 								var buffer = new Buffer(1);
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), '03');
+								assert.strictEqual(buffer.used, 1);
 							},
-							'-3' : function(serialize) {
+							'should serialize -3' : function(serialize) {
 								var value = -3;
 								var buffer = new Buffer(1);
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), 'fd');
+								assert.strictEqual(buffer.used, 1);
 							},
-							'-1' : function(serialize) {
+							'should serialize -1' : function(serialize) {
 								var value = -1;
 								var buffer = new Buffer(1);
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), 'ff');
+								assert.strictEqual(buffer.used, 1);
 							},
-							'undefined' : function(serialize) {
+							'should serialize undefined' : function(serialize) {
 								var value = undefined;
 								var buffer = new Buffer(1);
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), '00');
+								assert.strictEqual(buffer.used, 1);
 							}
 						},
-						'should properly serialize Short' : {
+						'Short serializer' : {
 							topic : function(serializer) {
 								return serializer.serializeShort.bind(serializer);
 							},
-							'3' : function(serialize) {
+							'should serialize 3' : function(serialize) {
 								var value = 3;
 								var buffer = new Buffer(2);
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), '0003');
+								assert.strictEqual(buffer.used, 2);
 							},
-							'867' : function(serialize) {
+							'should serialize 867' : function(serialize) {
 								var value = 867;
 								var buffer = new Buffer(2);
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), '0363');
+								assert.strictEqual(buffer.used, 2);
 							},
-							'65535' : function(serialize) {
+							'should serialize 65535' : function(serialize) {
 								var value = 65535;
 								var buffer = new Buffer(2);
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), 'ffff');
+								assert.strictEqual(buffer.used, 2);
 							},
-							'undefined' : function(serialize) {
+							'should serialize undefined' : function(serialize) {
 								var value = undefined;
 								var buffer = new Buffer(2);
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), '0000');
+								assert.strictEqual(buffer.used, 2);
 							}
 						},
-						'should properly serialize Signed Short' : {
+						'Signed Short serializer' : {
 							topic : function(serializer) {
 								return serializer.serializeSignedShort.bind(serializer);
 							},
-							'3' : function(serialize) {
+							'should serialize 3' : function(serialize) {
 								var value = 3;
 								var buffer = new Buffer(2);
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), '0003');
+								assert.strictEqual(buffer.used, 2);
 							},
-							'-3' : function(serialize) {
+							'should serialize -3' : function(serialize) {
 								var value = -3;
 								var buffer = new Buffer(2);
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), 'fffd');
+								assert.strictEqual(buffer.used, 2);
 							},
-							'867' : function(serialize) {
+							'should serialize 867' : function(serialize) {
 								var value = 867;
 								var buffer = new Buffer(2);
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), '0363');
+								assert.strictEqual(buffer.used, 2);
 							},
-							'-1' : function(serialize) {
+							'should serialize -1' : function(serialize) {
 								var value = -1;
 								var buffer = new Buffer(2);
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), 'ffff');
+								assert.strictEqual(buffer.used, 2);
 							},
-							'undefined' : function(serialize) {
+							'should serialize undefined' : function(serialize) {
 								var value = undefined;
 								var buffer = new Buffer(2);
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), '0000');
+								assert.strictEqual(buffer.used, 2);
 							}
 						},
-						'should properly serialize Long' : {
+						'Long serializer' : {
 							topic : function(serializer) {
 								return serializer.serializeLong.bind(serializer);
 							},
-							'3' : function(serialize) {
+							'should serialize 3' : function(serialize) {
 								var value = 3;
 								var buffer = new Buffer(4);
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), '00000003');
+								assert.strictEqual(buffer.used, 4);
 							},
-							'56877370' : function(serialize) {
+							'should serialize 56877370' : function(serialize) {
 								var value = 56877370;
 								var buffer = new Buffer(4);
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), '0363e13a');
+								assert.strictEqual(buffer.used, 4);
 							},
-							'4294967295' : function(serialize) {
+							'should serialize 4294967295' : function(serialize) {
 								var value = 4294967295;
 								var buffer = new Buffer(4);
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), 'ffffffff');
+								assert.strictEqual(buffer.used, 4);
 							},
-							'undefined' : function(serialize) {
+							'should serialize undefined' : function(serialize) {
 								var value = undefined;
 								var buffer = new Buffer(4);
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), '00000000');
+								assert.strictEqual(buffer.used, 4);
 							}
 						},
-						'should properly serialize Signed Long' : {
+						'Signed Long serializer' : {
 							topic : function(serializer) {
 								return serializer.serializeSignedLong.bind(serializer);
 							},
-							'3' : function(serialize) {
+							'should serialize 3' : function(serialize) {
 								var value = 3;
 								var buffer = new Buffer(4);
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), '00000003');
+								assert.strictEqual(buffer.used, 4);
 							},
-							'-3' : function(serialize) {
+							'should serialize -3' : function(serialize) {
 								var value = -3;
 								var buffer = new Buffer(4);
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), 'fffffffd');
+								assert.strictEqual(buffer.used, 4);
 							},
-							'56877370' : function(serialize) {
+							'should serialize 56877370' : function(serialize) {
 								var value = 56877370;
 								var buffer = new Buffer(4);
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), '0363e13a');
+								assert.strictEqual(buffer.used, 4);
 							},
-							'-1' : function(serialize) {
+							'should serialize -1' : function(serialize) {
 								var value = -1;
 								var buffer = new Buffer(4);
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), 'ffffffff');
+								assert.strictEqual(buffer.used, 4);
 							},
-							'undefined' : function(serialize) {
+							'should serialize undefined' : function(serialize) {
 								var value = undefined;
 								var buffer = new Buffer(4);
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), '00000000');
+								assert.strictEqual(buffer.used, 4);
 							}
 						},
-						'should properly serialize Long Long' : {
+						'Long Long serializer' : {
 							topic : function(serializer) {
 								return serializer.serializeLongLong.bind(serializer);
 							},
-							'3' : function(serialize) {
+							'should serialize 3' : function(serialize) {
 								var value = 3;
 								var buffer = new Buffer(8);
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), '0000000000000003');
+								assert.strictEqual(buffer.used, 8);
 							},
-							'1092066989945895' : function(serialize) {
+							'should serialize 1092066989945895' : function(serialize) {
 								var value = 1092066989945895;
 								var buffer = new Buffer(8);
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), '0003e13aa901b427');
+								assert.strictEqual(buffer.used, 8);
 							},
-							'\'0363e13aa901b429\'' : function(serialize) {
+							'should serialize \'0363e13aa901b429\'' : function(serialize) {
 								var value = '0363e13aa901b427';
 								var buffer = new Buffer(8);
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), '0363e13aa901b427');
+								assert.strictEqual(buffer.used, 8);
 							},
-							'18446744073709551615' : function(serialize) {
+							'should serialize 18446744073709551615' : function(serialize) {
 								var value = 18446744073709551615;
 								var buffer = new Buffer(8);
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), 'ffffffffffffffff');
+								assert.strictEqual(buffer.used, 8);
 							},
-							'\'ffffffffffffffff\'' : function(serialize) {
+							'should serialize \'ffffffffffffffff\'' : function(serialize) {
 								var value = 'ffffffffffffffff';
 								var buffer = new Buffer(8);
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), 'ffffffffffffffff');
+								assert.strictEqual(buffer.used, 8);
 							},
-							'undefined' : function(serialize) {
+							'should serialize undefined' : function(serialize) {
 								var value = undefined;
 								var buffer = new Buffer(8);
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), '0000000000000000');
+								assert.strictEqual(buffer.used, 8);
 							}
 						},
-						'should properly serialize Signed Long Long' : {
+						'Signed Long Long serializer' : {
 							topic : function(serializer) {
 								return serializer.serializeSignedLongLong.bind(serializer);
 							},
-							'3' : function(serialize) {
+							'should serialize 3' : function(serialize) {
 								var value = 3;
 								var buffer = new Buffer(8);
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), '0000000000000003');
+								assert.strictEqual(buffer.used, 8);
 							},
-							'-3' : function(serialize) {
+							'should serialize -3' : function(serialize) {
 								var value = -3;
 								var buffer = new Buffer(8);
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), 'fffffffffffffffd');
+								assert.strictEqual(buffer.used, 8);
 							},
-							'1092066989945895' : function(serialize) {
+							'should serialize 1092066989945895' : function(serialize) {
 								var value = 1092066989945895;
 								var buffer = new Buffer(8);
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), '0003e13aa901b427');
+								assert.strictEqual(buffer.used, 8);
 							},
-							'\'0363e13aa901b429\'' : function(serialize) {
+							'should serialize \'0363e13aa901b429\'' : function(serialize) {
 								var value = '0363e13aa901b427';
 								var buffer = new Buffer(8);
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), '0363e13aa901b427');
+								assert.strictEqual(buffer.used, 8);
 							},
-							'-1' : function(serialize) {
+							'should serialize -1' : function(serialize) {
 								var value = -1;
 								var buffer = new Buffer(8);
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), 'ffffffffffffffff');
+								assert.strictEqual(buffer.used, 8);
 							},
-							'\'ffffffffffffffff\'' : function(serialize) {
+							'should serialize \'ffffffffffffffff\'' : function(serialize) {
 								var value = 'ffffffffffffffff';
 								var buffer = new Buffer(8);
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), 'ffffffffffffffff');
+								assert.strictEqual(buffer.used, 8);
 							},
-							'undefined' : function(serialize) {
+							'should serialize undefined' : function(serialize) {
 								var value = undefined;
 								var buffer = new Buffer(8);
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), '0000000000000000');
+								assert.strictEqual(buffer.used, 8);
 							}
 						},
-						'should properly serialize Boolean' : {
+						'Boolean serializer' : {
 							topic : function(serializer) {
 								return serializer.serializeBoolean.bind(serializer);
 							},
-							'true' : function(serialize) {
+							'should serialize true' : function(serialize) {
 								var value = true;
 								var buffer = new Buffer(1);
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), '01');
+								assert.strictEqual(buffer.used, 1);
 							},
-							'false' : function(serialize) {
+							'should serialize false' : function(serialize) {
 								var value = false;
 								var buffer = new Buffer(1);
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), '00');
+								assert.strictEqual(buffer.used, 1);
 							},
-							'1' : function(serialize) {
+							'should serialize 1' : function(serialize) {
 								var value = 1;
 								var buffer = new Buffer(1);
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), '01');
+								assert.strictEqual(buffer.used, 1);
 							},
-							'0' : function(serialize) {
+							'should serialize 0' : function(serialize) {
 								var value = 0;
 								var buffer = new Buffer(1);
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), '00');
+								assert.strictEqual(buffer.used, 1);
 							},
-							'undefined' : function(serialize) {
+							'should serialize undefined' : function(serialize) {
 								var value = undefined;
 								var buffer = new Buffer(1);
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), '00');
+								assert.strictEqual(buffer.used, 1);
 							}
 						},
-						'should properly serialize Float' : {
+						'Float serializer' : {
 							topic : function(serializer) {
 								return serializer.serializeFloat.bind(serializer);
 							},
-							'1' : function(serialize) {
+							'should serialize 1' : function(serialize) {
 								var value = 1;
 								var buffer = new Buffer(4);
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), '3f800000');
+								assert.strictEqual(buffer.used, 4);
 							},
-							'-2' : function(serialize) {
+							'should serialize -2' : function(serialize) {
 								var value = -2;
 								var buffer = new Buffer(4);
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), 'c0000000');
+								assert.strictEqual(buffer.used, 4);
 							},
-							'3.4028234663852886e+38' : function(serialize) {
+							'should serialize 3.4028234663852886e+38' : function(serialize) {
 								var value = 3.4028234663852886e+38;
 								var buffer = new Buffer(4);
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), '7f7fffff');
+								assert.strictEqual(buffer.used, 4);
 							},
-							'0' : function(serialize) {
+							'should serialize 0' : function(serialize) {
 								var value = 0;
 								var buffer = new Buffer(4);
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), '00000000');
+								assert.strictEqual(buffer.used, 4);
 							},
-							'-0' : function(serialize) {
+							'should serialize -0' : function(serialize) {
 								var value = -0;
 								var buffer = new Buffer(4);
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), '80000000');
+								assert.strictEqual(buffer.used, 4);
 							},
-							'Infinity' : function(serialize) {
+							'should serialize Infinity' : function(serialize) {
 								var value = Infinity;
 								var buffer = new Buffer(4);
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), '7f800000');
+								assert.strictEqual(buffer.used, 4);
 							},
-							'-Infinity' : function(serialize) {
+							'should serialize -Infinity' : function(serialize) {
 								var value = -Infinity;
 								var buffer = new Buffer(4);
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), 'ff800000');
+								assert.strictEqual(buffer.used, 4);
 							},
-							'NaN' : function(serialize) {
+							'should serialize NaN' : function(serialize) {
 								var value = NaN;
 								var buffer = new Buffer(4);
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), '7fc00000');
+								assert.strictEqual(buffer.used, 4);
 							},
-							'1/3' : function(serialize) {
+							'should serialize 1/3' : function(serialize) {
 								var value = 1 / 3;
 								var buffer = new Buffer(4);
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), '3eaaaaab');
+								assert.strictEqual(buffer.used, 4);
 							},
-							'undefined' : function(serialize) {
+							'should serialize undefined' : function(serialize) {
 								var value = undefined;
 								var buffer = new Buffer(4);
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), '00000000');
+								assert.strictEqual(buffer.used, 4);
 							}
 						},
-						'should properly serialize Double' : {
+						'Double serializer' : {
 							topic : function(serializer) {
 								return serializer.serializeDouble.bind(serializer);
 							},
-							'1' : function(serialize) {
+							'should serialize 1' : function(serialize) {
 								var value = 1;
 								var buffer = new Buffer(8);
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), '3ff0000000000000');
+								assert.strictEqual(buffer.used, 8);
 							},
-							'1.0000000000000002' : function(serialize) {
+							'should serialize 1.0000000000000002' : function(serialize) {
 								var value = 1.0000000000000002;
 								var buffer = new Buffer(8);
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), '3ff0000000000001');
+								assert.strictEqual(buffer.used, 8);
 							},
-							'1.0000000000000004' : function(serialize) {
+							'should serialize 1.0000000000000004' : function(serialize) {
 								var value = 1.0000000000000004;
 								var buffer = new Buffer(8);
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), '3ff0000000000002');
+								assert.strictEqual(buffer.used, 8);
 							},
-							'2' : function(serialize) {
+							'should serialize 2' : function(serialize) {
 								var value = 2;
 								var buffer = new Buffer(8);
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), '4000000000000000');
+								assert.strictEqual(buffer.used, 8);
 							},
-							'-2' : function(serialize) {
+							'should serialize -2' : function(serialize) {
 								var value = -2;
 								var buffer = new Buffer(8);
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), 'c000000000000000');
+								assert.strictEqual(buffer.used, 8);
 							},
-							'0' : function(serialize) {
+							'should serialize 0' : function(serialize) {
 								var value = 0;
 								var buffer = new Buffer(8);
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), '0000000000000000');
+								assert.strictEqual(buffer.used, 8);
 							},
-							'-0' : function(serialize) {
+							'should serialize -0' : function(serialize) {
 								var value = -0;
 								var buffer = new Buffer(8);
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), '8000000000000000');
+								assert.strictEqual(buffer.used, 8);
 							},
-							'Infinity' : function(serialize) {
+							'should serialize Infinity' : function(serialize) {
 								var value = Infinity;
 								var buffer = new Buffer(8);
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), '7ff0000000000000');
+								assert.strictEqual(buffer.used, 8);
 							},
-							'-Infinity' : function(serialize) {
+							'should serialize -Infinity' : function(serialize) {
 								var value = -Infinity;
 								var buffer = new Buffer(8);
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), 'fff0000000000000');
+								assert.strictEqual(buffer.used, 8);
 							},
-							'NaN' : function(serialize) {
+							'should serialize NaN' : function(serialize) {
 								var value = NaN;
 								var buffer = new Buffer(8);
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), '7ff8000000000000');
+								assert.strictEqual(buffer.used, 8);
 							},
-							'1/3' : function(serialize) {
+							'should serialize 1/3' : function(serialize) {
 								var value = 1 / 3;
 								var buffer = new Buffer(8);
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), '3fd5555555555555');
+								assert.strictEqual(buffer.used, 8);
 							},
-							'undefined' : function(serialize) {
+							'should serialize undefined' : function(serialize) {
 								var value = undefined;
 								var buffer = new Buffer(8);
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), '0000000000000000');
+								assert.strictEqual(buffer.used, 8);
 							}
 						},
-						'should properly serialize Bit Pack' : {
+						'Bit Pack serializer' : {
 							topic : function(serializer) {
 								return serializer.serializeBitPack.bind(serializer);
 							},
-							'f f f f f f f f' : function(serialize) {
+							'should serialize f f f f f f f f' : function(serialize) {
 								var value = [ false, false, false, false, false, false, false, false ];
 								var buffer = new Buffer(1);
 								buffer.used = 0;
@@ -544,8 +609,9 @@ vows
 									serialize(buffer, value[i], i);
 								}
 								assert.strictEqual(buffer.toString('hex'), '00');
+								assert.strictEqual(buffer.used, 1);
 							},
-							't t t t t t t t' : function(serialize) {
+							'should serialize t t t t t t t t' : function(serialize) {
 								var value = [ true, true, true, true, true, true, true, true ];
 								var buffer = new Buffer(1);
 								buffer.used = 0;
@@ -553,8 +619,9 @@ vows
 									serialize(buffer, value[i], i);
 								}
 								assert.strictEqual(buffer.toString('hex'), 'ff');
+								assert.strictEqual(buffer.used, 1);
 							},
-							't t f t f t f t' : function(serialize) {
+							'should serialize t t f t f t f t' : function(serialize) {
 								var value = [ true, true, false, true, false, true, false, true ];
 								var buffer = new Buffer(1);
 								buffer.used = 0;
@@ -562,8 +629,9 @@ vows
 									serialize(buffer, value[i], i);
 								}
 								assert.strictEqual(buffer.toString('hex'), 'ab');
+								assert.strictEqual(buffer.used, 1);
 							},
-							't t f t f t f t t t' : function(serialize) {
+							'should serialize t t f t f t f t t t' : function(serialize) {
 								var value = [ true, true, false, true, false, true, false, true, true, true ];
 								var buffer = new Buffer(2);
 								buffer.used = 0;
@@ -571,8 +639,9 @@ vows
 									serialize(buffer, value[i], i);
 								}
 								assert.strictEqual(buffer.toString('hex'), 'ab03');
+								assert.strictEqual(buffer.used, 2);
 							},
-							't t f t f t f t t t f t f t f t' : function(serialize) {
+							'should serialize t t f t f t f t t t f t f t f t' : function(serialize) {
 								var value = [ true, true, false, true, false, true, false, true, true, true, false,
 										true, false, true, false, true ];
 								var buffer = new Buffer(2);
@@ -581,20 +650,22 @@ vows
 									serialize(buffer, value[i], i);
 								}
 								assert.strictEqual(buffer.toString('hex'), 'abab');
+								assert.strictEqual(buffer.used, 2);
 							},
-							'undefined' : function(serialize) {
+							'should serialize undefined' : function(serialize) {
 								var value = undefined;
 								var buffer = new Buffer(1);
 								buffer.used = 0;
 								serialize(buffer, value, 0);
 								assert.strictEqual(buffer.toString('hex'), '00');
+								assert.strictEqual(buffer.used, 1);
 							}
 						},
-						'should properly serialize Decimal' : {
+						'Decimal serializer' : {
 							topic : function(serializer) {
 								return serializer.serializeDecimal.bind(serializer);
 							},
-							'0' : function(serialize) {
+							'should serialize 0' : function(serialize) {
 								var value = {
 									digits : 0,
 									value : 0
@@ -603,8 +674,9 @@ vows
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), '0000000000');
+								assert.strictEqual(buffer.used, 5);
 							},
-							'3' : function(serialize) {
+							'should serialize 3' : function(serialize) {
 								var value = {
 									digits : 0,
 									value : 3
@@ -613,8 +685,9 @@ vows
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), '0000000003');
+								assert.strictEqual(buffer.used, 5);
 							},
-							'0.03' : function(serialize) {
+							'should serialize 0.03' : function(serialize) {
 								var value = {
 									digits : 2,
 									value : 0.03
@@ -623,8 +696,9 @@ vows
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), '0200000003');
+								assert.strictEqual(buffer.used, 5);
 							},
-							'-0.03' : function(serialize) {
+							'should serialize -0.03' : function(serialize) {
 								var value = {
 									digits : 2,
 									value : -0.03
@@ -633,73 +707,81 @@ vows
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), '02fffffffd');
+								assert.strictEqual(buffer.used, 5);
 							},
-							'undefined' : function(serialize) {
+							'should serialize undefined' : function(serialize) {
 								var value = undefined;
 								var buffer = new Buffer(5);
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), '0000000000');
+								assert.strictEqual(buffer.used, 5);
 							}
 						},
-						'should properly serialize Timestamp' : {
+						'Timestamp serializer' : {
 							topic : function(serializer) {
 								return serializer.serializeTimestamp.bind(serializer);
 							},
-							'Thu, 01 Jan 1970 00:00:00 GMT' : function(serialize) {
+							'should serialize Thu, 01 Jan 1970 00:00:00 GMT' : function(serialize) {
 								var value = new Date('Thu, 01 Jan 1970 00:00:00 GMT');
 								var buffer = new Buffer(8);
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), '0000000000000000');
+								assert.strictEqual(buffer.used, 8);
 							},
-							'Wed, 31 Dec 1969 23:59:59 GMT' : function(serialize) {
+							'should serialize Wed, 31 Dec 1969 23:59:59 GMT' : function(serialize) {
 								var value = new Date('Wed, 31 Dec 1969 23:59:59 GMT');
 								var buffer = new Buffer(8);
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), 'ffffffffffffffff');
+								assert.strictEqual(buffer.used, 8);
 							},
-							'undefined' : function(serialize) {
+							'should serialize undefined' : function(serialize) {
 								var value = undefined;
 								var buffer = new Buffer(8);
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.notStrictEqual(buffer.toString('hex'), '0000000000000000');
 								// TODO test correct value
+								assert.strictEqual(buffer.used, 8);
 							}
 						},
-						'should properly serialize Short String' : {
+						'Short String serializer' : {
 							topic : function(serializer) {
 								return serializer.serializeShortString.bind(serializer);
 							},
-							'\'Hello World!\'' : function(serialize) {
+							'should serialize \'Hello World!\'' : function(serialize) {
 								var value = 'Hello World!';
 								var buffer = new Buffer(13);
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), '0c48656c6c6f20576f726c6421');
+								assert.strictEqual(buffer.used, 13);
 							},
-							'\'\'' : function(serialize) {
+							'should serialize \'\'' : function(serialize) {
 								var value = '';
 								var buffer = new Buffer(1);
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), '00');
+								assert.strictEqual(buffer.used, 1);
 							},
-							'undefined' : function(serialize) {
+							'should serialize undefined' : function(serialize) {
 								var value = undefined;
 								var buffer = new Buffer(1);
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), '00');
+								assert.strictEqual(buffer.used, 1);
 							}
 						},
-						'should properly serialize Long String' : {
+						'Long String serializer' : {
 							topic : function(serializer) {
 								return serializer.serializeLongString.bind(serializer);
 							},
-							'\'Lorem ipsum dolor sit amet...\'' : function(serialize) {
+							'should serialize \'Lorem ipsum dolor sit amet...\'' : function(serialize) {
 								var value = 'Lorem ipsum dolor sit amet, consectetur '
 										+ 'adipiscing elit. Pellentesque mattis sollicitudin nibh vel tincidunt. '
 										+ 'Nunc at nunc consequat, rutrum purus in, venenatis risus. Donec libero '
@@ -726,72 +808,80 @@ vows
 										+ '6e63206174207072657469756d207472697374697175652e20446f6e656320656c69742'
 										+ '06c65637475732c2064696374756d2069642066656c69732061632c206c6163696e6961'
 										+ '2074696e636964756e74206572617420766f6c75747061742e20');
+								assert.strictEqual(buffer.used, 505);
 							},
-							'\'\'' : function(serialize) {
+							'should serialize \'\'' : function(serialize) {
 								var value = '';
 								var buffer = new Buffer(4);
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), '00000000');
+								assert.strictEqual(buffer.used, 4);
 							},
-							'undefined' : function(serialize) {
+							'should serialize undefined' : function(serialize) {
 								var value = undefined;
 								var buffer = new Buffer(4);
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), '00000000');
+								assert.strictEqual(buffer.used, 4);
 							}
 						},
-						'should properly serialize Byte Array' : {
+						'Byte Array serializer' : {
 							topic : function(serializer) {
 								return serializer.serializeByteArray.bind(serializer);
 							},
-							'0x01, 0x23, 0x45, 0x67, 0x89, 0xab, 0xcd, 0xef' : function(serialize) {
+							'should serialize 0x01, 0x23, 0x45, 0x67, 0x89, 0xab, 0xcd, 0xef' : function(serialize) {
 								var value = new Buffer([ 0x01, 0x23, 0x45, 0x67, 0x89, 0xab, 0xcd, 0xef ]);
 								var buffer = new Buffer(12);
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), '000000080123456789abcdef');
+								assert.strictEqual(buffer.used, 12);
 							},
-							'<empty Buffer>' : function(serialize) {
+							'should serialize <empty Buffer>' : function(serialize) {
 								var value = new Buffer([]);
 								var buffer = new Buffer(4);
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), '00000000');
+								assert.strictEqual(buffer.used, 4);
 							},
-							'undefined' : function(serialize) {
+							'should serialize undefined' : function(serialize) {
 								var value = undefined;
 								var buffer = new Buffer(4);
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), '00000000');
+								assert.strictEqual(buffer.used, 4);
 							}
 						},
-						'should properly serialize Void' : {
+						'Void serializer' : {
 							topic : function(serializer) {
 								return serializer.serializeVoid.bind(serializer);
 							},
-							'undefined' : function(serialize) {
+							'should serialize undefined' : function(serialize) {
 								var value = undefined;
 								var buffer = new Buffer(0);
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), '');
+								assert.strictEqual(buffer.used, 0);
 							}
 						},
-						'should properly serialize Array' : {
+						'Array serializer' : {
 							topic : function(serializer) {
 								return serializer.serializeArray.bind(serializer);
 							},
-							'[]' : function(serialize) {
+							'should serialize []' : function(serialize) {
 								var value = [];
 								var buffer = new Buffer(4);
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), '00000000');
+								assert.strictEqual(buffer.used, 4);
 							},
-							'[{type:\'Void\',data:undefined},{type:\'Signed 8-bit\',data:49}]' : function(serialize) {
+							'should serialize [{type:\'Void\',data:undefined},{type:\'Signed 8-bit\',data:49}]' : function(serialize) {
 								var value = [ {
 									type : 'Void',
 									data : undefined
@@ -803,27 +893,30 @@ vows
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), '00000003566231');
+								assert.strictEqual(buffer.used, 7);
 							},
-							'undefined' : function(serialize) {
+							'should serialize undefined' : function(serialize) {
 								var value = undefined;
 								var buffer = new Buffer(4);
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), '00000000');
+								assert.strictEqual(buffer.used, 4);
 							}
 						},
-						'should properly serialize Table' : {
+						'Table serializer' : {
 							topic : function(serializer) {
 								return serializer.serializeTable.bind(serializer);
 							},
-							'{}' : function(serialize) {
+							'should serialize {}' : function(serialize) {
 								var value = {};
 								var buffer = new Buffer(4);
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), '00000000');
+								assert.strictEqual(buffer.used, 4);
 							},
-							'{test:{type:\'Signed 8-bit\',data:49}}' : function(serialize) {
+							'should serialize {test:{type:\'Signed 8-bit\',data:49}}' : function(serialize) {
 								var value = {
 									test : {
 										type : 'Signed 8-bit',
@@ -834,20 +927,22 @@ vows
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), '0000000704746573746231');
+								assert.strictEqual(buffer.used, 11);
 							},
-							'undefined' : function(serialize) {
+							'should serialize undefined' : function(serialize) {
 								var value = undefined;
 								var buffer = new Buffer(4);
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), '00000000');
+								assert.strictEqual(buffer.used, 4);
 							}
 						},
-						'should properly serialize Value' : {
+						'Value serializer' : {
 							topic : function(serializer) {
 								return serializer.serializeValue.bind(serializer);
 							},
-							'{type:\'Boolean\',data:true}' : function(serialize) {
+							'should serialize {type:\'Boolean\',data:true}' : function(serialize) {
 								var value = {
 									type : 'Boolean',
 									data : true
@@ -856,8 +951,9 @@ vows
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), '7401');
+								assert.strictEqual(buffer.used, 2);
 							},
-							'{type:\'Signed 8-bit\',data:3}' : function(serialize) {
+							'should serialize {type:\'Signed 8-bit\',data:3}' : function(serialize) {
 								var value = {
 									type : 'Signed 8-bit',
 									data : 3
@@ -866,8 +962,9 @@ vows
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), '6203');
+								assert.strictEqual(buffer.used, 2);
 							},
-							'{type:\'Signed 16-bit\',data:-15}' : function(serialize) {
+							'should serialize {type:\'Signed 16-bit\',data:-15}' : function(serialize) {
 								var value = {
 									type : 'Signed 16-bit',
 									data : -15
@@ -876,8 +973,9 @@ vows
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), '73fff1');
+								assert.strictEqual(buffer.used, 3);
 							},
-							'{type:\'Signed 32-bit\',data:-972143}' : function(serialize) {
+							'should serialize {type:\'Signed 32-bit\',data:-972143}' : function(serialize) {
 								var value = {
 									type : 'Signed 32-bit',
 									data : -972143
@@ -886,8 +984,9 @@ vows
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), '49fff12a91');
+								assert.strictEqual(buffer.used, 5);
 							},
-							'{type:\'Signed 64-bit\',data:180140122183954}' : function(serialize) {
+							'should serialize {type:\'Signed 64-bit\',data:180140122183954}' : function(serialize) {
 								var value = {
 									type : 'Signed 64-bit',
 									data : 180140122183954
@@ -896,8 +995,9 @@ vows
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), '6c0000a3d623fe1912');
+								assert.strictEqual(buffer.used, 9);
 							},
-							'{type:\'32-bit float\',data:9.974403355091338e-23}' : function(serialize) {
+							'should serialize {type:\'32-bit float\',data:9.974403355091338e-23}' : function(serialize) {
 								var value = {
 									type : '32-bit float',
 									data : 9.974403355091338e-23
@@ -906,8 +1006,9 @@ vows
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), '661af12a91');
+								assert.strictEqual(buffer.used, 5);
 							},
-							'{type:\'64-bit float\',data:8.90010458087363e-310}' : function(serialize) {
+							'should serialize {type:\'64-bit float\',data:8.90010458087363e-310}' : function(serialize) {
 								var value = {
 									type : '64-bit float',
 									data : 8.90010458087363e-310
@@ -916,8 +1017,9 @@ vows
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), '640000a3d623fe1912');
+								assert.strictEqual(buffer.used, 9);
 							},
-							'{type:\'Decimal\',data:{digits:2,value:3.5}}' : function(serialize) {
+							'should serialize {type:\'Decimal\',data:{digits:2,value:3.5}}' : function(serialize) {
 								var value = {
 									type : 'Decimal',
 									data : {
@@ -929,8 +1031,9 @@ vows
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), '44020000015e');
+								assert.strictEqual(buffer.used, 6);
 							},
-							'{type:\'Long string\',data:\'wuttwutt\'}' : function(serialize) {
+							'should serialize {type:\'Long string\',data:\'wuttwutt\'}' : function(serialize) {
 								var value = {
 									type : 'Long string',
 									data : 'wuttwutt'
@@ -939,9 +1042,9 @@ vows
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), '53000000087775747477757474');
+								assert.strictEqual(buffer.used, 13);
 							},
-							'{type:\'Array\',data:[{type:\'Void\',data:undefined},{type:\'Signed 8-bit\',data:49}]}' : function(
-									serialize) {
+							'should serialize {type:\'Array\',data:[{type:\'Void\',data:undefined},{type:\'Signed 8-bit\',data:49}]}' : function(serialize) {
 								var value = {
 									type : 'Array',
 									data : [ {
@@ -956,9 +1059,9 @@ vows
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), '4100000003566231');
+								assert.strictEqual(buffer.used, 8);
 							},
-							'{type:\'Timestamp\',data:new Date(\'Thu, 14 Nov 2013 19:32:57 GMT\')}' : function(
-									serialize) {
+							'should serialize {type:\'Timestamp\',data:new Date(\'Thu, 14 Nov 2013 19:32:57 GMT\')}' : function(serialize) {
 								var value = {
 									type : 'Timestamp',
 									data : new Date('Thu, 14 Nov 2013 19:32:57 GMT')
@@ -967,8 +1070,9 @@ vows
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), '540000000052852569');
+								assert.strictEqual(buffer.used, 9);
 							},
-							'{type:\'Nested Table\',data:{test:{type:\'Signed 8-bit\',data:49}}}' : function(serialize) {
+							'should serialize {type:\'Nested Table\',data:{test:{type:\'Signed 8-bit\',data:49}}}' : function(serialize) {
 								var value = {
 									type : 'Nested Table',
 									data : {
@@ -982,8 +1086,9 @@ vows
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), '460000000704746573746231');
+								assert.strictEqual(buffer.used, 12);
 							},
-							'{type:\'Void\',data:undefined}' : function(serialize) {
+							'should serialize {type:\'Void\',data:undefined}' : function(serialize) {
 								var value = {
 									type : 'Void',
 									data : undefined
@@ -992,9 +1097,9 @@ vows
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), '56');
+								assert.strictEqual(buffer.used, 1);
 							},
-							'{type:\'Byte array\',data:new Buffer([0x01,0x23,0x45,0x67,0x89,0xab,0xcd,0xef])}' : function(
-									serialize) {
+							'should serialize {type:\'Byte array\',data:new Buffer([0x01,0x23,0x45,0x67,0x89,0xab,0xcd,0xef])}' : function(serialize) {
 								var value = {
 									type : 'Byte array',
 									data : new Buffer([ 0x01, 0x23, 0x45, 0x67, 0x89, 0xab, 0xcd, 0xef ])
@@ -1003,13 +1108,15 @@ vows
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), '78000000080123456789abcdef');
+								assert.strictEqual(buffer.used, 13);
 							},
-							'undefined' : function(serialize) {
+							'should serialize undefined' : function(serialize) {
 								var value = undefined;
 								var buffer = new Buffer(1);
 								buffer.used = 0;
 								serialize(buffer, value);
 								assert.strictEqual(buffer.toString('hex'), '56');
+								assert.strictEqual(buffer.used, 1);
 							}
 						}
 					}
