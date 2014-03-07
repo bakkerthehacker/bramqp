@@ -22,7 +22,9 @@ vows
 								}
 								var socket = net.connect({
 									port : 5672
-								}, function() {
+								});
+								socket.on('error', self.callback);
+								socket.on('connect', function() {
 									bramqp.initializeSocket(socket, function(error, handle) {
 										if(error){
 											return self.callback(error);
