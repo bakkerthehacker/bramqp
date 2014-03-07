@@ -4,7 +4,7 @@ When sending a message, the message body is sent separately as content. It is se
 but only the `basic` class supports content. Content is sent after a method that uses it, such as
 `basic.publish`.
 
-To send content to the server, simple call `content`.
+To send content to the server, simply call `content`.
 
 #### handle.content(channel, className, properties, content, callback(error))
 
