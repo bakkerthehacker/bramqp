@@ -28,7 +28,7 @@ bramqp.selectSpecification('rabbitmq/full/amqp0-9-1.stripped.extended', function
 				}, 10 * 1000);
 			}, function(seriesCallback) {
 				handle.socket.end();
-				setImmediate(seriesCallback());
+				setImmediate(seriesCallback);
 			} ], function() {
 				console.log('all done');
 			});

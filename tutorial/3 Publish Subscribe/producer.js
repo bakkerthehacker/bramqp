@@ -59,7 +59,7 @@ bramqp.selectSpecification('rabbitmq/full/amqp0-9-1.stripped.extended', function
 					}, function(seriesCallback) {
 						console.log("socket ended");
 						handle.socket.end();
-						setImmediate(seriesCallback());
+						setImmediate(seriesCallback);
 					} ], function(err) {
 				if (err) {
 					console.log(err);
