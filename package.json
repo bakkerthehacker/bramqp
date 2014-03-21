@@ -1,6 +1,6 @@
 {
 	"name" : "bramqp",
-	"version" : "0.1.11",
+	"version" : "0.1.12",
 	"description" : "bakkerthehacker's rambunctious AMQP library",
 	"keywords" : [ "amqp", "bramqp" ],
 	"homepage" : "http://github.com/bakkerthehacker/bramqp",
@@ -33,5 +33,5 @@
 	"engines" : {
 		"node" : ">= 0.10.0"
 	},
-	"readme" : "# [View the Read Me on GitHub](http://github.com/bakkerthehacker/bramqp)"
+	"readme" : ""
 }
