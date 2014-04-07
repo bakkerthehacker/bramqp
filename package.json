@@ -20,7 +20,7 @@
 		"url" : "git://github.com/bakkerthehacker/bramqp.git"
 	},
 	"dependencies" : {
-		"async" : "~0.2.10",
+		"async" : "~0.7.0",
 		"xml2js" : "~0.4.1",
 		"buffer-more-ints" : "~0.0.2"
 	},
