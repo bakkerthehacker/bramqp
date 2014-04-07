@@ -35,6 +35,10 @@ The following specifications are included in bramqp:
 - `rabbitmq/full/amqp0-9.stripped`
 - `rabbitmq/full/amqp0-8.stripped`
 
+Although there are several specifications included in bramqp, only `amqp0-9-1.stripped.extended` is fully supported. 
+All parsers, tutorials and tests are built using this specification.  The `amqp0-9-1.stripped` specification may work as well. 
+However, the others are quite different and will probably not work at all. 
+
 ## Socket
 
 A network socket must be supplied to bramqp. Supplying an existing connection allows bramqp to be as flexible as possible,
