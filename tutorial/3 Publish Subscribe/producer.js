@@ -37,15 +37,15 @@ bramqp.selectSpecification('rabbitmq/full/amqp0-9-1.stripped.extended', function
 						handle.basic.publish(1, exchangeName, routingKey, publishErrors, queueMessages, function() {
 							var contentType = 'basic';
 							var properties = {};
-							var content = "11-23-2013: some log";
+							var content = '11-23-2013: some log';
 							handle.content(1, contentType, properties, content, function() {
-								console.log("message published");
+								console.log('message published');
 								seriesCallback();
 							});
 						});
 					}, function(seriesCallback) {
 						handle.on('basic.return', function(replyCode, replyText, exchange, routingKey) {
-							console.log("Message Returned from Server");
+							console.log('Message Returned from Server');
 							console.log(replyCode);
 							console.log(replyText);
 							console.log(exchange);
@@ -53,11 +53,11 @@ bramqp.selectSpecification('rabbitmq/full/amqp0-9-1.stripped.extended', function
 						seriesCallback();
 					}, function(seriesCallback) {
 						setTimeout(function() {
-							console.log("close communication");
+							console.log('close communication');
 							handle.closeAMQPCommunication(seriesCallback);
 						}, 10 * 1000);
 					}, function(seriesCallback) {
-						console.log("socket ended");
+						console.log('socket ended');
 						handle.socket.end();
 						setImmediate(seriesCallback);
 					} ], function(err) {

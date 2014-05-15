@@ -48,7 +48,7 @@ bramqp.selectSpecification('rabbitmq/full/amqp0-9-1.stripped.extended', function
 							console.log('with properties:');
 							console.log(properties);
 							var n = parseInt(content.toString(), 10);
-							console.log(" [.] fib(" + n + ")");
+							console.log(' [.] fib(' + n + ')');
 							var response = fib(n);
 							handle.basic.publish(1, '', properties['reply-to'], false, false, function() {
 								handle.content(1, 'basic', {

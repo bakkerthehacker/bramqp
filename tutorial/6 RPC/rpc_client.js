@@ -77,9 +77,9 @@ FibonacciRpcClient.prototype.call = function(n, returnCallback) {
 };
 
 var fibonacciRpc = new FibonacciRpcClient(function() {
-	console.log(" [x] Requesting fib(30)");
+	console.log(' [x] Requesting fib(30)');
 	fibonacciRpc.call(30, function(response) {
-		console.log(" [.] Got " + response);
+		console.log(' [.] Got ' + response);
 	});
 
 });

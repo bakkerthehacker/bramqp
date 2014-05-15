@@ -8,7 +8,7 @@ bramqp.selectSpecification('rabbitmq/full/amqp0-9-1.stripped.extended', function
 	}
 	var exchangeName = 'logs';
 	var exchangeType = 'fanout';
-	var queueName = "";
+	var queueName = '';
 	var socket = net.connect({
 		port : 5672
 	}, function() {
