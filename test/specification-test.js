@@ -19,7 +19,7 @@ vows.describe('specification').addBatch({
 		},
 		'path' : {
 			topic : function(spec) {
-				return spec.path
+				return spec.path;
 			},
 			'should match the specification source' : function(path) {
 				var sourcePath = 'rabbitmq/full/amqp0-9-1.stripped.extended';
@@ -28,7 +28,7 @@ vows.describe('specification').addBatch({
 		},
 		'amqp version' : {
 			topic : function(spec) {
-				return spec.amqp
+				return spec.amqp;
 			},
 			'should be 0-9-1' : function(version) {
 				assert.strictEqual(version.major, '0');
