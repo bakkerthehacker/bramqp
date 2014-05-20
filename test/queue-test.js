@@ -12,7 +12,7 @@ var puts = require('vows').console.puts({
 vows.describe('queue').addBatch({
 	'A queue' : {
 		'with default options' : {
-			topic : function(callback) {
+			topic : function() {
 				var self = this;
 				bramqp.selectSpecification('rabbitmq/full/amqp0-9-1.stripped.extended', function(error) {
 					if (error) {
@@ -45,19 +45,36 @@ vows.describe('queue').addBatch({
 					});
 				});
 			},
-			'should recieve messages sent to it' : function(handle) {
-				assert(handle);
-				handle.basic.consume(1, 'test-queue', null, false, true, false, false, {});
-				handle.once('basic.consume-ok', function(channel, method, data) {
-					handle.on('basic.deliver', function(channel, method, data) {
-						handle.once('content', function(channel, className, properties, content) {
-							assert.strictEqual(content.toString(), 'Hello World!');
+			'with a message' : {
+				topic : function(handle) {
+					var self = this;
+					async.series([ function(seriesCallback) {
+						handle.basic.consume(1, 'test-queue', null, false, true, false, false, {}, seriesCallback);
+					}, function(seriesCallback) {
+						handle.once('basic.consume-ok', function(channel, method, data) {
+							seriesCallback();
 						});
+					}, function(seriesCallback) {
+						handle.on('basic.deliver', function(channel, method, data) {
+							handle.once('content', function(channel, className, properties, content) {
+								self.callback(null, content);
+							});
+						});
+						setImmediate(seriesCallback);
+					}, function(seriesCallback) {
+						handle.basic.publish(1, '', 'test-queue', false, false, function() {
+							handle.content(1, 'basic', {}, 'Hello World!', seriesCallback);
+						});
+					} ], function(error) {
+						if (error) {
+							self.callback(error);
+						}
 					});
-					handle.basic.publish(1, '', 'test-queue', false, false, function() {
-						handle.content(1, 'basic', {}, 'Hello World!', seriesCallback);
-					});
-				});
+				},
+				'should recieve messages sent to it' : function(content) {
+					assert.instanceOf(content, Buffer);
+					assert.strictEqual(content.toString(), 'Hello World!');
+				}
 			}
 		}
 	}
