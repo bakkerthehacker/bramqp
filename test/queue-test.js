@@ -57,7 +57,11 @@ vows.describe('queue').addBatch({
 					}, function(seriesCallback) {
 						handle.on('basic.deliver', function(channel, method, data) {
 							handle.once('content', function(channel, className, properties, content) {
-								self.callback(null, content);
+								self.callback(null, {
+									className : className,
+									properties : properties,
+									content : content
+								});
 							});
 						});
 						setImmediate(seriesCallback);
@@ -71,9 +75,12 @@ vows.describe('queue').addBatch({
 						}
 					});
 				},
-				'should recieve messages sent to it' : function(content) {
-					assert.instanceOf(content, Buffer);
-					assert.strictEqual(content.toString(), 'Hello World!');
+				'should recieve the same message sent to it' : function(message) {
+					assert.strictEqual(message.className, 'basic');
+					assert.instanceOf(message.content, Buffer);
+					assert.strictEqual(message.content.toString(), 'Hello World!');
+					assert.isObject(message.properties);
+					assert.isEmpty(message.properties);
 				}
 			}
 		}
