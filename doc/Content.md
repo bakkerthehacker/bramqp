@@ -10,7 +10,7 @@ To send content to the server, simply call `content`.
 
 - `channel` The channel to send the content on.
 - `className` The name of the class to send the content to.
-- `properties` An object containing properties relating to the content. See [Value Types](Value Types.md).
+- `properties` An object containing properties relating to the content. See the xml spec for a list of every property. 
 - `content`	A string or buffer containing the message body.
 - `callback(error)` Called once the content has been written to the socket.
 
