@@ -11,10 +11,8 @@ vows.describe('specification').addBatch({
 	'The RabbitMQ 0-9-1-extended specification' : {
 		topic : function() {
 			var self = this;
-			specification.selectSpecification('rabbitmq/full/amqp0-9-1.stripped.extended', function() {
-				specification.getSpecification(function(spec) {
-					self.callback(null, spec);
-				});
+			specification.fetchSpecification('rabbitmq/full/amqp0-9-1.stripped.extended', function(error, spec) {
+				self.callback(error, spec);
 			});
 		},
 		'path' : {

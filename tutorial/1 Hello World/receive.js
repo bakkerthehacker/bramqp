@@ -9,7 +9,7 @@ bramqp.selectSpecification('rabbitmq/full/amqp0-9-1.stripped.extended', function
 	var socket = net.connect({
 		port : 5672
 	}, function() {
-		bramqp.initializeSocket(socket, function(error, handle) {
+		bramqp.initialize(socket, function(error, handle) {
 			async.series([ function(seriesCallback) {
 				handle.openAMQPCommunication('guest', 'guest', true, seriesCallback);
 			}, function(seriesCallback) {

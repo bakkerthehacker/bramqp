@@ -11,11 +11,9 @@ var puts = require('vows').console.puts({
 vows.describe('frameParser').addBatch({
 	'The AMQP 0-9-1-extended' : {
 		topic : function() {
-			var self = this;
-			specification.selectSpecification('rabbitmq/full/amqp0-9-1.stripped.extended', function() {
-				specification.getSpecification(function(spec) {
-					self.callback(null, new FrameParser(spec));
-				});
+			var self = this; 
+			specification.fetchSpecification('rabbitmq/full/amqp0-9-1.stripped.extended', function(error, spec) {
+				self.callback(error, new FrameParser(spec));
 			});
 		},
 		'Octet parser' : {
