@@ -15,7 +15,7 @@ The channel MUST NOT be included when the class is `connection` and MUST be incl
 
 Some methods contain a hyphen, `-`. These methods must be called using bracket notation.
 
-#### handle.\<class\>\[\<method-with-hyphen\>\](...)
+#### handle.\<class\>\["\<method-with-hyphen\>"\](...)
 
 When a message is received from the server, the `handle` emits an event.
 
