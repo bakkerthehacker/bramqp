@@ -20,7 +20,7 @@ Some methods contain a hyphen, `-`. These methods must be called using bracket n
 When a message is received from the server, the `handle` emits an event.  An optional `channel` number may be added to the front of the string.
 
 #### Event: '\<class\>.\<method\>'
-#### Event: '\<channel\>.\<class\>.\<method\>'
+#### Event: '\<channel\>:\<class\>.\<method\>'
 
 - `channel` The channel the method was received on.
 - `method` An object containing information about the method called. This is essentially a javascript version of the method as it appears in the xml specification.
