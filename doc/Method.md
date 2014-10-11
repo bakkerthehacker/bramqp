@@ -15,11 +15,12 @@ The channel MUST NOT be included when the class is `connection` and MUST be incl
 
 Some methods contain a hyphen, `-`. These methods must be called using bracket notation.
 
-#### handle.\<class\>\[\<method-with-hyphen\>\](...)
+#### handle.\<class\>\['\<method-with-hyphen\>'\](...)
 
-When a message is received from the server, the `handle` emits an event.
+When a message is received from the server, the `handle` emits an event.  An optional `channel` number may be added to the front of the string.
 
 #### Event: '\<class\>.\<method\>'
+#### Event: '\<channel\>:\<class\>.\<method\>'
 
 - `channel` The channel the method was received on.
 - `method` An object containing information about the method called. This is essentially a javascript version of the method as it appears in the xml specification.
@@ -35,8 +36,12 @@ handle.exchange.declare(1, 'exchange-name', 'topic', false, true, false, false, 
 	console.log('declare method sent');
 });
 
-handle.on('exchange.declare-ok', function(channel, method, data) {
+handle.on('1:exchange.declare-ok', function(channel, method, data) {
 	console.log('exchange declared');
+});
+
+handle.on('channel.close', function(channel, method, data) {
+	console.log('channel ' + channel + ' closed by server');
 });
 ```
 
