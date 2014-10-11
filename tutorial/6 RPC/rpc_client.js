@@ -5,51 +5,45 @@ var async = require('async');
 var FibonacciRpcClient = function(callback) {
 	var self = this;
 
-	bramqp.selectSpecification('rabbitmq/full/amqp0-9-1.stripped.extended', function(error) {
-		if (error) {
-			console.log(error);
-		}
-		self.socket = net.connect({
-			port : 5672
-		}, function() {
-			bramqp.initializeSocket(self.socket, function(error, handle) {
-				self.handle = handle;
-				async.series([ function(seriesCallback) {
-					self.handle.openAMQPCommunication('guest', 'guest', true, seriesCallback);
-				}, function(seriesCallback) {
-					self.handle.queue.declare(1, null, false, false, true, false, false, {});
-					self.handle.once('queue.declare-ok', function(channel, method, data) {
-						console.log('queue declared');
-						self.callbackQueue = data.queue;
-						seriesCallback();
-					});
-				}, function(seriesCallback) {
-					self.handle.basic.consume(1, self.callbackQueue, null, false, true, false, false, {});
-					self.handle.once('basic.consume-ok', function(channel, method, data) {
-						console.log('consuming from queue');
-						console.log(data);
-						self.handle.on('basic.deliver', function(channel, method, data) {
-							console.log('incomming message');
-							console.log(data);
-							self.handle.once('content', function(channel, className, properties, content) {
-								console.log('got a message:');
-								console.log(content.toString());
-								console.log('with properties:');
-								console.log(properties);
-
-								if (self.corrId === properties['correlation-id']) {
-									self.response = content.toString();
-								}
-
-							});
-						});
-						seriesCallback();
-					});
-				} ], function() {
-					console.log('all done');
-					callback();
-				});
+	var socket = net.connect({
+		port : 5672
+	});
+	bramqp.initialize(socket, 'rabbitmq/full/amqp0-9-1.stripped.extended', function(error, handle) {
+		self.handle = handle;
+		async.series([ function(seriesCallback) {
+			self.handle.openAMQPCommunication('guest', 'guest', true, seriesCallback);
+		}, function(seriesCallback) {
+			self.handle.queue.declare(1, null, false, false, true, false, false, {});
+			self.handle.once('queue.declare-ok', function(channel, method, data) {
+				console.log('queue declared');
+				self.callbackQueue = data.queue;
+				seriesCallback();
 			});
+		}, function(seriesCallback) {
+			self.handle.basic.consume(1, self.callbackQueue, null, false, true, false, false, {});
+			self.handle.once('basic.consume-ok', function(channel, method, data) {
+				console.log('consuming from queue');
+				console.log(data);
+				self.handle.on('basic.deliver', function(channel, method, data) {
+					console.log('incomming message');
+					console.log(data);
+					self.handle.once('content', function(channel, className, properties, content) {
+						console.log('got a message:');
+						console.log(content.toString());
+						console.log('with properties:');
+						console.log(properties);
+
+						if (self.corrId === properties['correlation-id']) {
+							self.response = content.toString();
+						}
+
+					});
+				});
+				seriesCallback();
+			});
+		} ], function() {
+			console.log('all done');
+			callback();
 		});
 	});
 

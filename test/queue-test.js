@@ -14,34 +14,26 @@ vows.describe('queue').addBatch({
 		'with default options' : {
 			topic : function() {
 				var self = this;
-				bramqp.selectSpecification('rabbitmq/full/amqp0-9-1.stripped.extended', function(error) {
+				var socket = net.connect({
+					port : 5672
+				});
+				bramqp.initialize(socket, 'rabbitmq/full/amqp0-9-1.stripped.extended', function(error, handle) {
 					if (error) {
 						return self.callback(error);
 					}
-					var socket = net.connect({
-						port : 5672
-					});
-					socket.on('error', self.callback);
-					socket.on('connect', function() {
-						bramqp.initializeSocket(socket, function(error, handle) {
+					async.series([ function(seriesCallback) {
+						handle.openAMQPCommunication(seriesCallback);
+					}, function(seriesCallback) {
+						handle.queue.declare(1, 'test-queue', function(error) {
 							if (error) {
-								return self.callback(error);
+								return seriesCallback(error);
 							}
-							async.series([ function(seriesCallback) {
-								handle.openAMQPCommunication(seriesCallback);
-							}, function(seriesCallback) {
-								handle.queue.declare(1, 'test-queue', function(error) {
-									if (error) {
-										return seriesCallback(error);
-									}
-									handle.once('queue.declare-ok', function(channel, method, data) {
-										seriesCallback();
-									});
-								});
-							} ], function(error) {
-								self.callback(error, handle);
+							handle.once('queue.declare-ok', function(channel, method, data) {
+								seriesCallback();
 							});
 						});
+					} ], function(error) {
+						self.callback(error, handle);
 					});
 				});
 			},
@@ -66,9 +58,7 @@ vows.describe('queue').addBatch({
 						});
 						setImmediate(seriesCallback);
 					}, function(seriesCallback) {
-						handle.basic.publish(1, '', 'test-queue', false, false, function() {
-							handle.content(1, 'basic', {}, 'Hello World!', seriesCallback);
-						});
+						handle.basic.publish(1, '', 'test-queue', false, false, {}, 'Hello World!', seriesCallback);
 					} ], function(error) {
 						if (error) {
 							self.callback(error);

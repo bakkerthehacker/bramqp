@@ -12,11 +12,8 @@ vows.describe('frameSerializer').addBatch({
 	'The AMQP 0-9-1-extended' : {
 		topic : function() {
 			var self = this;
-			specification.selectSpecification('rabbitmq/full/amqp0-9-1.stripped.extended', function() {
-				specification.getSpecification(function(spec) {
-					var a = new FrameSerializer(spec);
-					self.callback(null, a);
-				});
+			specification.fetchSpecification('rabbitmq/full/amqp0-9-1.stripped.extended', function(error, spec) {
+				self.callback(error, new FrameSerializer(spec));
 			});
 		},
 		'Octet serializer' : {
