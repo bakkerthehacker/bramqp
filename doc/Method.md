@@ -6,11 +6,12 @@ for all of these methods. This documentations is specific to the 0-9-1 extended 
 
 When sending methods to the server, simply call the method.
 
-#### handle.\<class\>.\<method\>([channel], [arguments...], [callback(error)])
+#### handle.\<class\>.\<method\>([channel], [arguments..., [contentProperties, content]], [callback(error)])
 
 - `channel` The AMQP channel to send the method on.
 The channel MUST NOT be included when the class is `connection` and MUST be included otherwise.
 - `arguments` The arguments as specified by the AMQP method.
+- `contentProperties`, `content` [Content](Content.md) can be passed directly to the method and will be written out along with it. 
 - `callback(error)` Called once the method has been written to the socket.
 
 Some methods contain a hyphen, `-`. These methods must be called using bracket notation.
