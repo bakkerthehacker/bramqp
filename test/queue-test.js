@@ -58,9 +58,7 @@ vows.describe('queue').addBatch({
 						});
 						setImmediate(seriesCallback);
 					}, function(seriesCallback) {
-						handle.basic.publish(1, '', 'test-queue', false, false, function() {
-							handle.content(1, 'basic', {}, 'Hello World!', seriesCallback);
-						});
+						handle.basic.publish(1, '', 'test-queue', false, false, {}, 'Hello World!', seriesCallback);
 					} ], function(error) {
 						if (error) {
 							self.callback(error);
