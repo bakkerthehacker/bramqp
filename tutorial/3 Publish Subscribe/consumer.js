@@ -1,3 +1,5 @@
+'use strict';
+
 var bramqp = require('bramqp');
 var net = require('net');
 var async = require('async');

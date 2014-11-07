@@ -1,3 +1,5 @@
+'use strict';
+
 var vows = require('vows');
 var assert = require('assert');
 
@@ -602,14 +604,14 @@ vows.describe('frameParser').addBatch({
 						0x61, 0x74, 0x2e, 0x20 ]);
 				buffer.read = 0;
 				var value = parse(buffer);
-				assert.strictEqual(value, 'Lorem ipsum dolor sit amet, consectetur '
-						+ 'adipiscing elit. Pellentesque mattis sollicitudin nibh vel tincidunt. '
-						+ 'Nunc at nunc consequat, rutrum purus in, venenatis risus. Donec libero '
-						+ 'lorem, tincidunt vel leo eget, fermentum accumsan risus. Donec mauris '
-						+ 'mauris, eleifend in leo sed, vestibulum dictum ante. Vivamus bibendum '
-						+ 'venenatis nisi ut elementum. Donec ultricies commodo laoreet. Maecenas '
-						+ 'facilisis nunc at pretium tristique. Donec elit lectus, dictum id felis '
-						+ 'ac, lacinia tincidunt erat volutpat. ');
+				assert.strictEqual(value, 'Lorem ipsum dolor sit amet, consectetur ' +
+						'adipiscing elit. Pellentesque mattis sollicitudin nibh vel tincidunt. ' +
+						'Nunc at nunc consequat, rutrum purus in, venenatis risus. Donec libero ' +
+						'lorem, tincidunt vel leo eget, fermentum accumsan risus. Donec mauris ' +
+						'mauris, eleifend in leo sed, vestibulum dictum ante. Vivamus bibendum ' +
+						'venenatis nisi ut elementum. Donec ultricies commodo laoreet. Maecenas ' +
+						'facilisis nunc at pretium tristique. Donec elit lectus, dictum id felis ' +
+						'ac, lacinia tincidunt erat volutpat. ');
 				assert.strictEqual(buffer.read, 505);
 			},
 			'should parse 0x00, 0x00, 0x00, 0x00' : function(parse) {
