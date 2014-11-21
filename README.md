@@ -2,11 +2,11 @@
 
 A radical, raw, robust, remarkable, rapid AMQP library for node.js
 
-[![NPM version](https://img.shields.io/npm/v/bramqp.svg)](https://npmjs.org/package/bramqp)
-[![Build Status](https://img.shields.io/travis/bakkerthehacker/bramqp/master.svg)](https://travis-ci.org/bakkerthehacker/bramqp)
-[![Dependency Status](https://img.shields.io/david/bakkerthehacker/bramqp.svg)](https://david-dm.org/bakkerthehacker/bramqp)
-[![devDependency Status](https://img.shields.io/david/dev/bakkerthehacker/bramqp.svg)](https://david-dm.org/bakkerthehacker/bramqp#info=devDependencies)
-[![Donate](https://img.shields.io/badge/donate-%E0%B8%BF%20bitcoin-127fdc.svg)](http://gh.bakker.pw/bramqp_donate)
+[![NPM version](https://img.shields.io/npm/v/bramqp.svg?style=flat)](https://npmjs.org/package/bramqp)
+[![Build Status](https://img.shields.io/travis/bakkerthehacker/bramqp/master.svg?style=flat)](https://travis-ci.org/bakkerthehacker/bramqp)
+[![Dependency Status](https://img.shields.io/david/bakkerthehacker/bramqp.svg?style=flat)](https://david-dm.org/bakkerthehacker/bramqp)
+[![devDependency Status](https://img.shields.io/david/dev/bakkerthehacker/bramqp.svg?style=flat)](https://david-dm.org/bakkerthehacker/bramqp#info=devDependencies)
+[![Donate](https://img.shields.io/badge/donate-%E0%B8%BF%20bitcoin-127fdc.svg?style=flat)](http://gh.bakker.pw/bramqp_donate)
 
 ## Benefits over existing AMQP libraries
 
