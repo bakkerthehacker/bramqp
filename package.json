@@ -25,7 +25,7 @@
 		"buffer-more-ints" : "~0.0.2"
 	},
 	"devDependencies" : {
-		"vows" : "~0.8.0"
+		"vows" : "0.8.0"
 	},
 	"scripts" : {
 		"test" : "vows --spec"
