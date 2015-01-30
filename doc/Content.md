@@ -14,9 +14,10 @@ To send content to the server, simply call `content`.
 - `content`	A string or buffer containing the message body.
 - `callback(error)` Called once the content has been written to the socket.
 
-When content is received from the server, the `handle` emits an event.
+When content is received from the server, the `handle` emits an event.  An optional `channel` number may be added to the front of the string.
 
 #### Event: 'content'
+#### Event: '\<channel\>:content'
 
 - `channel` The channel the content was received on.
 - `className` The name of the class that the content was sent to.
@@ -44,10 +45,10 @@ handle.basic.publish(1, 'exchange-name', 'routing-key', true, false, function(pu
 ```
 
 ```javascript
-handle.on('basic.deliver', function(channel, method, data) {
+handle.on('1:basic.deliver', function(channel, method, data) {
 	console.log('incoming message');
 	console.log(data);
-	handle.once('content', function(channel, className, properties, content) {
+	handle.once('1:content', function(channel, className, properties, content) {
 		console.log('got a message:');
 		console.log(content.toString());
 		console.log('with properties:');
