@@ -18,7 +18,7 @@ A radical, raw, robust, remarkable, rapid AMQP library for node.js
 ## Drawbacks over existing AMQP libraries
 
 - The application code is more verbose
-- A thorough knowledge of the AMQP specification is needed
+- A thorough knowledge of the [AMQP specification](https://www.rabbitmq.com/resources/specs/amqp0-9-1.pdf) is needed
 
 ## Installation
 
