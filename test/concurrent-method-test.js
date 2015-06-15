@@ -21,14 +21,14 @@ function connectAMQP(i, callback) {
 		var spec = 'rabbitmq/full/amqp0-9-1.stripped.extended';
 		var handle = new ConnectionHandle(socket, spec);
 		handle.once('init', function() {
-			handle.openAMQPCommunication('guest', 'guest', true, 
+			handle.openAMQPCommunication('guest', 'guest', true,
 				function() {
 					HANDLES.push(handle);
 					callback();
 				});
 		});
 	});
-};
+}
 
 function disconnectAMQP(i, callback) {
 	var handle = HANDLES[i];
@@ -40,9 +40,7 @@ function disconnectAMQP(i, callback) {
 function connectAllSeries(callback) {
 	async.eachSeries([0,1,2,3,4], function(i, seriesCallback) {
 		connectAMQP(i, seriesCallback);
-	}, function(err) {
-		callback();
-	});
+	}, callback);
 }
 
 var exchangeDeclare = function(i) {
@@ -61,8 +59,8 @@ var exchangeDeclare = function(i) {
 				self.callback(true, i);
 			});
 		});
-	}
-}
+	};
+};
 
 var queueDeclare = function(i) {
 	return function() {
@@ -80,15 +78,15 @@ var queueDeclare = function(i) {
 				self.callback(true, i);
 			});
 		});
-	}
-}
+	};
+};
 
 var verifyDeclare = function() {
 	return function(success, i, error) {
 		disconnectAMQP(i);
 		assert.strictEqual(success, true);
-	}
-}
+	};
+};
 
 vows.describe('concurrent exchange declare').addBatch({
 	'get connected...' : {
@@ -150,6 +148,5 @@ vows.describe('concurrent exchange declare').addBatch({
 			'check queue declared': verifyDeclare()
 		}
 	}
-	
-}).export(module);
 
+}).export(module);

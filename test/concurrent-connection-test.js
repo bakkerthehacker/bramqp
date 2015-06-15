@@ -25,7 +25,7 @@ var connectAMQP = function() {
 			}, 5000);
 
 			handle.once('init', function() {
-				handle.openAMQPCommunication('guest', 'guest', true, 
+				handle.openAMQPCommunication('guest', 'guest', true,
 					function() {
 						clearTimeout(bail);
 						self.callback(true, handle);
@@ -38,10 +38,10 @@ var connectAMQP = function() {
 var connectVerify = function() {
 	return function(success, handle, error) {
 		assert.strictEqual(success, true);
-		handle.closeAMQPCommunication(function() { 
+		handle.closeAMQPCommunication(function() {
 			handle.socket.end();
 		});
-	}
+	};
 };
 
 vows.describe('concurrent connections').addBatch({
@@ -66,4 +66,3 @@ vows.describe('concurrent connections').addBatch({
 		'should be connected' : connectVerify(),
 	}
 }).export(module);
-
