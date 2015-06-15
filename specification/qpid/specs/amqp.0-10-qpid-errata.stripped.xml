@@ -1,0 +1,1203 @@
+<?xml version="1.0"?>
+
+<!--
+(c) Copyright Cisco Systems, Credit Suisse, Deutsche Borse Systems,
+Envoy Technologies, Inc., Goldman Sachs, IONA Technologies PLC, iMatix
+Corporation sprl.,JPMorgan Chase Bank Inc. N.A, Novell, Rabbit
+Technologies Ltd., Red Hat, Inc., TWIST Process Innovations ltd, and
+29West Inc. 2006, 2007.
+
+Copyright (c) 2009 AMQP Working Group.
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions
+are met:
+1. Redistributions of source code must retain the above copyright
+notice, this list of conditions and the following disclaimer.
+2. Redistributions in binary form must reproduce the above copyright
+notice, this list of conditions and the following disclaimer in the
+documentation and/or other materials provided with the distribution.
+3. The name of the author may not be used to endorse or promote products
+derived from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+-->
+
+<amqp major="0" xmlns="http://www.amqp.org/schema/amqp.xsd" port="5672" minor="10">
+  <type name="bin8" code="0x00" fixed-width="1"/>
+  <type name="int8" code="0x01" fixed-width="1"/>
+  <type name="uint8" code="0x02" fixed-width="1"/>
+  <type name="char" code="0x04" fixed-width="1"/>
+  <type name="boolean" code="0x08" fixed-width="1"/>
+  <type name="bin16" code="0x10" fixed-width="2"/>
+  <type name="int16" code="0x11" fixed-width="2"/>
+  <type name="uint16" code="0x12" fixed-width="2"/>
+  <type name="bin32" code="0x20" fixed-width="4"/>
+  <type name="int32" code="0x21" fixed-width="4"/>
+  <type name="uint32" code="0x22" fixed-width="4"/>
+  <type name="float" code="0x23" fixed-width="4"/>
+  <type name="char-utf32" code="0x27" fixed-width="4"/>
+  <type name="sequence-no" fixed-width="4"/>
+  <type name="bin64" code="0x30" fixed-width="8"/>
+  <type name="int64" code="0x31" fixed-width="8"/>
+  <type name="uint64" code="0x32" fixed-width="8"/>
+  <type name="double" code="0x33" fixed-width="8"/>
+  <type name="datetime" code="0x38" fixed-width="8"/>
+  <type name="bin128" code="0x40" fixed-width="16"/>
+  <type name="uuid" code="0x48" fixed-width="16"/>
+  <type name="bin256" code="0x50" fixed-width="32"/>
+  <type name="bin512" code="0x60" fixed-width="64"/>
+  <type name="bin1024" code="0x70" fixed-width="128"/>
+  <type name="vbin8" code="0x80" variable-width="1"/>
+  <type name="str8-latin" code="0x84" variable-width="1"/>
+  <type name="str8" code="0x85" variable-width="1"/>
+  <type name="str8-utf16" code="0x86" variable-width="1"/>
+  <type name="vbin16" code="0x90" variable-width="2"/>
+  <type name="str16-latin" code="0x94" variable-width="2"/>
+  <type name="str16" code="0x95" variable-width="2"/>
+  <type name="str16-utf16" code="0x96" variable-width="2"/>
+  <type name="byte-ranges" variable-width="2"/>
+  <type name="sequence-set" variable-width="2"/>
+  <type name="vbin32" code="0xa0" variable-width="4"/>
+  <type name="map" code="0xa8" variable-width="4"/>
+  <type name="list" code="0xa9" variable-width="4"/>
+  <type name="array" code="0xaa" variable-width="4"/>
+  <type name="struct32" code="0xab" variable-width="4"/>
+  <type name="bin40" code="0xc0" fixed-width="5"/>
+  <type name="dec32" code="0xc8" fixed-width="5"/>
+  <type name="bin72" code="0xd0" fixed-width="9"/>
+  <type name="dec64" code="0xd8" fixed-width="9"/>
+  <type name="void" code="0xf0" fixed-width="0"/>
+  <type name="bit" code="0xf1" fixed-width="0"/>
+  <constant name="MIN-MAX-FRAME-SIZE" value="4096"/>
+  <domain name="segment-type" type="uint8">
+    <enum>
+      <choice name="control" value="0"/>
+      <choice name="command" value="1"/>
+      <choice name="header" value="2"/>
+      <choice name="body" value="3"/>
+    </enum>
+  </domain>
+  <domain name="track" type="uint8">
+    <enum>
+      <choice name="control" value="0"/>
+      <choice name="command" value="1"/>
+    </enum>
+  </domain>
+  <domain name="str16-array" type="array"/>
+  <class name="connection" code="0x1">
+    <role name="server" implement="MUST"/>
+    <role name="client" implement="MUST"/>
+    <domain name="close-code" type="uint16">
+      <enum>
+        <choice name="normal" value="200"/>
+        <choice name="connection-forced" value="320"/>
+        <choice name="invalid-path" value="402"/>
+        <choice name="framing-error" value="501"/>
+      </enum>
+    </domain>
+    <domain name="amqp-host-url" type="str16"/>
+    <domain name="amqp-host-array" type="array"/>
+    <control name="start" code="0x1">
+      <rule name="protocol-name"/>
+      <rule name="client-support"/>
+      <implement role="client" handle="MUST"/>
+      <response name="start-ok"/>
+      <field name="server-properties" type="map">
+        <rule name="required-fields"/>
+      </field>
+      <field name="mechanisms" type="str16-array" required="true"/>
+      <field name="locales" type="str16-array" required="true">
+        <rule name="required-support"/>
+      </field>
+    </control>
+    <control name="start-ok" code="0x2">
+      <implement role="server" handle="MUST"/>
+      <field name="client-properties" type="map">
+        <rule name="required-fields"/>
+      </field>
+      <field name="mechanism" type="str8" required="true">
+        <rule name="security"/>
+        <rule name="validity"/>
+      </field>
+      <field name="response" type="vbin32" required="true"/>
+      <field name="locale" type="str8" required="true"/>
+    </control>
+    <control name="secure" code="0x3">
+      <implement role="client" handle="MUST"/>
+      <response name="secure-ok"/>
+      <field name="challenge" type="vbin32" required="true"/>
+    </control>
+    <control name="secure-ok" code="0x4">
+      <implement role="server" handle="MUST"/>
+      <field name="response" type="vbin32" required="true"/>
+    </control>
+    <control name="tune" code="0x5">
+      <implement role="client" handle="MUST"/>
+      <response name="tune-ok"/>
+      <field name="channel-max" type="uint16"/>
+      <field name="max-frame-size" type="uint16">
+        <rule name="minimum"/>
+      </field>
+      <field name="heartbeat-min" type="uint16"/>
+      <field name="heartbeat-max" type="uint16">
+        <rule name="permitted-range"/>
+        <rule name="no-heartbeat-min"/>
+      </field>
+    </control>
+    <control name="tune-ok" code="0x6">
+      <implement role="server" handle="MUST"/>
+      <field name="channel-max" type="uint16" required="true">
+        <rule name="upper-limit"/>
+        <rule name="available-channels"/>
+      </field>
+      <field name="max-frame-size" type="uint16">
+        <rule name="minimum"/>
+        <rule name="upper-limit"/>
+        <rule name="max-frame-size"/>
+      </field>
+      <field name="heartbeat" type="uint16">
+        <rule name="permitted-range"/>
+        <rule name="no-heartbeat-min"/>
+      </field>
+    </control>
+    <control name="open" code="0x7">
+      <implement role="server" handle="MUST"/>
+      <response name="open-ok"/>
+      <response name="redirect"/>
+      <field name="virtual-host" type="str8" required="true">
+        <rule name="separation"/>
+        <rule name="security"/>
+      </field>
+      <field name="capabilities" type="str16-array"/>
+      <field name="insist" type="bit">
+        <rule name="behavior"/>
+      </field>
+    </control>
+    <control name="open-ok" code="0x8">
+      <implement role="client" handle="MUST"/>
+      <field name="known-hosts" type="amqp-host-array"/>
+    </control>
+    <control name="redirect" code="0x9">
+      <rule name="usage"/>
+      <implement role="client" handle="MUST"/>
+      <field name="host" type="amqp-host-url" required="true"/>
+      <field name="known-hosts" type="amqp-host-array"/>
+    </control>
+    <control name="heartbeat" code="0xa">
+      <implement role="client" handle="MAY"/>
+      <implement role="server" handle="MAY"/>
+    </control>
+    <control name="close" code="0xb">
+      <implement role="client" handle="MUST"/>
+      <implement role="server" handle="MUST"/>
+      <response name="close-ok"/>
+      <field name="reply-code" type="close-code" required="true"/>
+      <field name="reply-text" type="str8"/>
+    </control>
+    <control name="close-ok" code="0xc">
+      <rule name="reporting"/>
+      <implement role="client" handle="MUST"/>
+      <implement role="server" handle="MUST"/>
+    </control>
+  </class>
+  <class name="session" code="0x2">
+    <rule name="attachment"/>
+    <role name="server" implement="MUST"/>
+    <role name="client" implement="MUST"/>
+    <role name="sender" implement="MUST"/>
+    <role name="receiver" implement="MUST"/>
+    <domain name="name" type="vbin16"/>
+    <domain name="detach-code" type="uint8">
+      <enum>
+        <choice name="normal" value="0"/>
+        <choice name="session-busy" value="1"/>
+        <choice name="transport-busy" value="2"/>
+        <choice name="not-attached" value="3"/>
+        <choice name="unknown-ids" value="4"/>
+      </enum>
+    </domain>
+    <domain name="commands" type="sequence-set"/>
+    <struct name="header" size="1" pack="1">
+      <field name="sync" type="bit"/>
+    </struct>
+    <struct name="command-fragment" size="0" pack="0">
+      <field name="command-id" type="sequence-no" required="true"/>
+      <field name="byte-ranges" type="byte-ranges" required="true"/>
+    </struct>
+    <domain name="command-fragments" type="array"/>
+    <control name="attach" code="0x1">
+      <rule name="one-transport-per-session"/>
+      <rule name="one-session-per-transport"/>
+      <rule name="idempotence"/>
+      <rule name="scoping"/>
+      <implement role="server" handle="MUST"/>
+      <implement role="client" handle="MAY"/>
+      <response name="attached"/>
+      <response name="detached"/>
+      <field name="name" type="name" required="true"/>
+      <field name="force" type="bit"/>
+    </control>
+    <control name="attached" code="0x2">
+      <implement role="server" handle="MUST"/>
+      <implement role="client" handle="MUST"/>
+      <field name="name" type="name" required="true"/>
+    </control>
+    <control name="detach" code="0x3">
+      <implement role="server" handle="MUST"/>
+      <implement role="client" handle="MUST"/>
+      <response name="detached"/>
+      <field name="name" type="name" required="true"/>
+    </control>
+    <control name="detached" code="0x4">
+      <implement role="server" handle="MUST"/>
+      <implement role="client" handle="MUST"/>
+      <field name="name" type="name" required="true"/>
+      <field name="code" type="detach-code" required="true"/>
+    </control>
+    <control name="request-timeout" code="0x5">
+      <rule name="maximum-granted-timeout"/>
+      <implement role="sender" handle="MUST"/>
+      <implement role="receiver" handle="MUST"/>
+      <response name="timeout"/>
+      <field name="timeout" type="uint32"/>
+    </control>
+    <control name="timeout" code="0x6">
+      <implement role="sender" handle="MUST"/>
+      <implement role="receiver" handle="MUST"/>
+      <field name="timeout" type="uint32"/>
+    </control>
+    <control name="command-point" code="0x7">
+      <rule name="newly-attached-transports"/>
+      <rule name="zero-offset"/>
+      <rule name="nonzero-offset"/>
+      <implement role="receiver" handle="MUST"/>
+      <field name="command-id" type="sequence-no" required="true"/>
+      <field name="command-offset" type="uint64" required="true"/>
+    </control>
+    <control name="expected" code="0x8">
+      <rule name="include-next-command"/>
+      <rule name="commands-empty-means-new-session"/>
+      <rule name="no-overlaps"/>
+      <rule name="minimal-fragments"/>
+      <implement role="sender" handle="MUST"/>
+      <field name="commands" type="commands" required="true"/>
+      <field name="fragments" type="command-fragments"/>
+    </control>
+    <control name="confirmed" code="0x9">
+      <rule name="durability"/>
+      <rule name="no-overlaps"/>
+      <rule name="minimal-fragments"/>
+      <implement role="sender" handle="MUST"/>
+      <field name="commands" type="commands">
+        <rule name="exclude-known-complete"/>
+      </field>
+      <field name="fragments" type="command-fragments"/>
+    </control>
+    <control name="completed" code="0xa">
+      <rule name="known-completed-reply"/>
+      <rule name="delayed-reply"/>
+      <rule name="merged-reply"/>
+      <implement role="sender" handle="MUST"/>
+      <field name="commands" type="commands">
+        <rule name="completed-implies-confirmed"/>
+        <rule name="exclude-known-complete"/>
+      </field>
+      <field name="timely-reply" type="bit"/>
+    </control>
+    <control name="known-completed" code="0xb">
+      <rule name="stateless"/>
+      <implement role="receiver" handle="MUST"/>
+      <field name="commands" type="commands">
+        <rule name="known-completed-implies-known-confirmed"/>
+      </field>
+    </control>
+    <control name="flush" code="0xc">
+      <implement role="receiver" handle="MUST"/>
+      <field name="expected" type="bit"/>
+      <field name="confirmed" type="bit"/>
+      <field name="completed" type="bit"/>
+    </control>
+    <control name="gap" code="0xd">
+      <rule name="gap-confirmation-and-completion"/>
+      <rule name="aborted-commands"/>
+      <rule name="completed-or-confirmed-commands"/>
+      <implement role="receiver" handle="MUST"/>
+      <field name="commands" type="commands"/>
+    </control>
+  </class>
+  <class name="execution" code="0x3">
+    <role name="server" implement="MUST"/>
+    <role name="client" implement="MUST"/>
+    <domain name="error-code" type="uint16">
+      <enum>
+        <choice name="unauthorized-access" value="403"/>
+        <choice name="not-found" value="404"/>
+        <choice name="resource-locked" value="405"/>
+        <choice name="precondition-failed" value="406"/>
+        <choice name="resource-deleted" value="408"/>
+        <choice name="illegal-state" value="409"/>
+        <choice name="command-invalid" value="503"/>
+        <choice name="resource-limit-exceeded" value="506"/>
+        <choice name="not-allowed" value="530"/>
+        <choice name="illegal-argument" value="531"/>
+        <choice name="not-implemented" value="540"/>
+        <choice name="internal-error" value="541"/>
+        <choice name="invalid-argument" value="542"/>
+      </enum>
+    </domain>
+    <command name="sync" code="0x1">
+      <implement role="server" handle="MUST"/>
+      <implement role="client" handle="MUST"/>
+    </command>
+    <command name="result" code="0x2">
+      <implement role="server" handle="MUST"/>
+      <implement role="client" handle="MUST"/>
+      <field name="command-id" type="sequence-no" required="true"/>
+      <field name="value" type="struct32"/>
+    </command>
+    <command name="exception" code="0x3">
+      <implement role="client" handle="MUST"/>
+      <implement role="server" handle="MUST"/>
+      <field name="error-code" type="error-code" required="true"/>
+      <field name="command-id" type="sequence-no"/>
+      <field name="class-code" type="uint8"/>
+      <field name="command-code" type="uint8"/>
+      <field name="field-index" type="uint8"/>
+      <field name="description" type="str16"/>
+      <field name="error-info" type="map"/>
+    </command>
+  </class>
+  <class name="message" code="0x4">
+    <rule name="persistent-message"/>
+    <rule name="no-persistent-message-discard"/>
+    <rule name="throttling"/>
+    <rule name="non-persistent-message-overflow"/>
+    <rule name="non-persistent-message-discard"/>
+    <rule name="min-priority-levels"/>
+    <rule name="priority-level-implementation"/>
+    <rule name="priority-delivery"/>
+    <role name="server" implement="MUST"/>
+    <role name="client" implement="MUST"/>
+    <domain name="destination" type="str8"/>
+    <domain name="accept-mode" type="uint8">
+      <enum>
+        <choice name="explicit" value="0"/>
+        <choice name="none" value="1"/>
+      </enum>
+    </domain>
+    <domain name="acquire-mode" type="uint8">
+      <enum>
+        <choice name="pre-acquired" value="0"/>
+        <choice name="not-acquired" value="1"/>
+      </enum>
+    </domain>
+    <domain name="reject-code" type="uint16">
+      <enum>
+        <choice name="unspecified" value="0"/>
+        <choice name="unroutable" value="1"/>
+        <choice name="immediate" value="2"/>
+      </enum>
+    </domain>
+    <domain name="resume-id" type="str16"/>
+    <domain name="delivery-mode" type="uint8">
+      <enum>
+        <choice name="non-persistent" value="1"/>
+        <choice name="persistent" value="2"/>
+      </enum>
+    </domain>
+    <domain name="delivery-priority" type="uint8">
+      <enum>
+        <choice name="lowest" value="0"/>
+        <choice name="lower" value="1"/>
+        <choice name="low" value="2"/>
+        <choice name="below-average" value="3"/>
+        <choice name="medium" value="4"/>
+        <choice name="above-average" value="5"/>
+        <choice name="high" value="6"/>
+        <choice name="higher" value="7"/>
+        <choice name="very-high" value="8"/>
+        <choice name="highest" value="9"/>
+      </enum>
+    </domain>
+    <struct name="delivery-properties" code="0x1" size="4" pack="2">
+      <field name="discard-unroutable" type="bit"/>
+      <field name="immediate" type="bit"/>
+      <field name="redelivered" type="bit">
+        <rule name="implementation"/>
+        <rule name="hinting"/>
+      </field>
+      <field name="priority" type="delivery-priority" required="true"/>
+      <field name="delivery-mode" type="delivery-mode" required="true"/>
+      <field name="ttl" type="uint64">
+        <rule name="ttl-decrement"/>
+      </field>
+      <field name="timestamp" type="datetime"/>
+      <field name="expiration" type="datetime"/>
+      <field name="exchange" type="exchange.name"/>
+      <field name="routing-key" type="str8"/>
+      <field name="resume-id" type="resume-id"/>
+      <field name="resume-ttl" type="uint64"/>
+    </struct>
+    <struct name="fragment-properties" code="0x2" size="4" pack="2">
+      <field name="first" type="bit" default="1"/>
+      <field name="last" type="bit" default="1"/>
+      <field name="fragment-size" type="uint64"/>
+    </struct>
+    <struct name="reply-to" size="2" pack="2">
+      <field name="exchange" type="exchange.name"/>
+      <field name="routing-key" type="str8"/>
+    </struct>
+    <struct name="message-properties" code="0x3" size="4" pack="2">
+      <field name="content-length" type="uint64"/>
+      <field name="message-id" type="uuid">
+        <rule name="unique"/>
+        <rule name="immutable"/>
+      </field>
+      <field name="correlation-id" type="vbin16"/>
+      <field name="reply-to" type="reply-to"/>
+      <field name="content-type" type="str8"/>
+      <field name="content-encoding" type="str8"/>
+      <field name="user-id" type="vbin16">
+        <rule name="authentication"/>
+      </field>
+      <field name="app-id" type="vbin16"/>
+      <field name="application-headers" type="map"/>
+    </struct>
+    <domain name="flow-mode" type="uint8">
+      <enum>
+        <choice name="credit" value="0"/>
+        <choice name="window" value="1"/>
+      </enum>
+    </domain>
+    <domain name="credit-unit" type="uint8">
+      <enum>
+        <choice name="message" value="0"/>
+        <choice name="byte" value="1"/>
+      </enum>
+    </domain>
+    <command name="transfer" code="0x1">
+      <rule name="transactional-publish"/>
+      <implement role="server" handle="MUST"/>
+      <implement role="client" handle="MUST"/>
+      <field name="destination" type="destination">
+        <rule name="blank-destination"/>
+        <exception name="nonexistent-exchange" error-code="not-found"/>
+      </field>
+      <field name="accept-mode" type="accept-mode" required="true"/>
+      <field name="acquire-mode" type="acquire-mode" required="true"/>
+      <segments>
+        <header>
+          <entry type="delivery-properties"/>
+          <entry type="fragment-properties"/>
+          <entry type="message-properties"/>
+        </header>
+        <body/>
+      </segments>
+    </command>
+    <command name="accept" code="0x2">
+      <rule name="acquisition"/>
+      <implement role="server" handle="MUST"/>
+      <implement role="client" handle="MUST"/>
+      <field name="transfers" type="session.commands" required="true"/>
+    </command>
+    <command name="reject" code="0x3">
+      <rule name="alternate-exchange"/>
+      <rule name="acquisition"/>
+      <implement role="server" handle="MUST"/>
+      <implement role="client" handle="MUST"/>
+      <field name="transfers" type="session.commands" required="true"/>
+      <field name="code" type="reject-code" required="true"/>
+      <field name="text" type="str8"/>
+    </command>
+    <command name="release" code="0x4">
+      <rule name="ordering"/>
+      <implement role="server" handle="MUST"/>
+      <implement role="client" handle="MAY"/>
+      <field name="transfers" type="session.commands" required="true"/>
+      <field name="set-redelivered" type="bit"/>
+    </command>
+    <command name="acquire" code="0x5">
+      <rule name="one-to-one"/>
+      <implement role="server" handle="MUST"/>
+      <field name="transfers" type="session.commands" required="true"/>
+      <result>
+        <struct name="acquired" code="0x4" size="4" pack="2">
+          <field name="transfers" type="session.commands" required="true"/>
+        </struct>
+      </result>
+    </command>
+    <command name="resume" code="0x6">
+      <implement role="server" handle="MUST"/>
+      <implement role="client" handle="MUST"/>
+      <field name="destination" type="destination">
+        <exception name="destination-not-found" error-code="not-found"/>
+      </field>
+      <field name="resume-id" type="resume-id" required="true">
+        <rule name="unknown-resume-id"/>
+      </field>
+      <result>
+        <struct name="message-resume-result" code="0x5" size="4" pack="2">
+          <field name="offset" type="uint64"/>
+        </struct>
+      </result>
+    </command>
+    <command name="subscribe" code="0x7">
+      <rule name="simultaneous-subscriptions"/>
+      <rule name="default-flow-mode"/>
+      <exception name="queue-deletion" error-code="resource-deleted"/>
+      <exception name="queue-not-found" error-code="not-found"/>
+      <rule name="initial-credit"/>
+      <implement role="server" handle="MUST"/>
+      <field name="queue" type="queue.name" required="true"/>
+      <field name="destination" type="destination">
+        <exception name="unique-subscriber-destination" error-code="not-allowed"/>
+      </field>
+      <field name="accept-mode" type="accept-mode" required="true"/>
+      <field name="acquire-mode" type="acquire-mode" required="true"/>
+      <field name="exclusive" type="bit">
+        <exception name="in-use" error-code="resource-locked"/>
+      </field>
+      <field name="resume-id" type="resume-id"/>
+      <field name="resume-ttl" type="uint64"/>
+      <field name="arguments" type="map"/>
+    </command>
+    <command name="cancel" code="0x8">
+      <rule name="post-cancel-transfer-resolution"/>
+      <implement role="server" handle="MUST"/>
+      <field name="destination" type="destination" required="true">
+        <exception name="subscription-not-found" error-code="not-found"/>
+      </field>
+    </command>
+    <command name="set-flow-mode" code="0x9">
+      <rule name="byte-accounting"/>
+      <rule name="mode-switching"/>
+      <rule name="default-flow-mode"/>
+      <implement role="server" handle="MUST"/>
+      <implement role="client" handle="MUST"/>
+      <field name="destination" type="destination"/>
+      <field name="flow-mode" type="flow-mode" required="true"/>
+    </command>
+    <command name="flow" code="0xa">
+      <implement role="server" handle="MUST"/>
+      <implement role="client" handle="MUST"/>
+      <field name="destination" type="destination"/>
+      <field name="unit" type="credit-unit" required="true"/>
+      <field name="value" type="uint32"/>
+    </command>
+    <command name="flush" code="0xb">
+      <implement role="server" handle="MUST"/>
+      <field name="destination" type="destination"/>
+    </command>
+    <command name="stop" code="0xc">
+      <implement role="server" handle="MUST"/>
+      <implement role="client" handle="MUST"/>
+      <field name="destination" type="destination"/>
+    </command>
+  </class>
+  <class name="tx" code="0x5">
+    <rule name="duplicate-tracking"/>
+    <role name="server" implement="SHOULD"/>
+    <command name="select" code="0x1">
+      <exception name="exactly-once" error-code="illegal-state"/>
+      <exception name="no-dtx" error-code="illegal-state"/>
+      <exception name="explicit-accepts" error-code="not-allowed"/>
+      <implement role="server" handle="MUST"/>
+    </command>
+    <command name="commit" code="0x2">
+      <exception name="select-required" error-code="illegal-state"/>
+      <implement role="server" handle="MUST"/>
+    </command>
+    <command name="rollback" code="0x3">
+      <exception name="select-required" error-code="illegal-state"/>
+      <implement role="server" handle="MUST"/>
+    </command>
+  </class>
+  <class name="dtx" code="0x6">
+    <rule name="transactionality"/>
+    <role name="server" implement="MAY"/>
+    <role name="client" implement="MAY"/>
+    <domain name="xa-status" type="uint16">
+      <enum>
+        <choice name="xa-ok" value="0"/>
+        <choice name="xa-rbrollback" value="1"/>
+        <choice name="xa-rbtimeout" value="2"/>
+        <choice name="xa-heurhaz" value="3"/>
+        <choice name="xa-heurcom" value="4"/>
+        <choice name="xa-heurrb" value="5"/>
+        <choice name="xa-heurmix" value="6"/>
+        <choice name="xa-rdonly" value="7"/>
+      </enum>
+    </domain>
+    <struct name="xa-result" code="0x1" size="4" pack="2">
+      <field name="status" type="xa-status" required="true"/>
+    </struct>
+    <struct name="xid" code="0x4" size="4" pack="2">
+      <field name="format" type="uint32" required="true"/>
+      <field name="global-id" type="vbin8" required="true"/>
+      <field name="branch-id" type="vbin8" required="true"/>
+    </struct>
+    <command name="select" code="0x1">
+      <implement role="server" handle="MAY"/>
+    </command>
+    <command name="start" code="0x2">
+      <exception name="illegal-state" error-code="illegal-state"/>
+      <exception name="already-known" error-code="not-allowed"/>
+      <exception name="join-and-resume" error-code="not-allowed"/>
+      <implement role="server" handle="MAY"/>
+      <field name="xid" type="xid" required="true">
+        <exception name="unknown-xid" error-code="not-allowed"/>
+      </field>
+      <field name="join" type="bit">
+        <exception name="unsupported" error-code="not-implemented"/>
+      </field>
+      <field name="resume" type="bit"/>
+      <result type="xa-result"/>
+    </command>
+    <command name="end" code="0x3">
+      <exception name="illegal-state" error-code="illegal-state"/>
+      <exception name="suspend-and-fail" error-code="not-allowed"/>
+      <rule name="success"/>
+      <rule name="session-closed"/>
+      <implement role="server" handle="MAY"/>
+      <field name="xid" type="xid" required="true">
+        <exception name="not-associated" error-code="illegal-state"/>
+      </field>
+      <field name="fail" type="bit">
+        <rule name="failure"/>
+      </field>
+      <field name="suspend" type="bit">
+        <rule name="resume"/>
+      </field>
+      <result type="xa-result"/>
+    </command>
+    <command name="commit" code="0x4">
+      <exception name="illegal-state" error-code="illegal-state"/>
+      <implement role="server" handle="MAY"/>
+      <field name="xid" type="xid" required="true">
+        <exception name="unknown-xid" error-code="not-found"/>
+        <exception name="not-disassociated" error-code="illegal-state"/>
+      </field>
+      <field name="one-phase" type="bit">
+        <exception name="one-phase" error-code="illegal-state"/>
+        <exception name="two-phase" error-code="illegal-state"/>
+      </field>
+      <result type="xa-result"/>
+    </command>
+    <command name="forget" code="0x5">
+      <exception name="illegal-state" error-code="illegal-state"/>
+      <implement role="server" handle="MAY"/>
+      <field name="xid" type="xid" required="true">
+        <exception name="unknown-xid" error-code="not-found"/>
+        <exception name="not-disassociated" error-code="illegal-state"/>
+      </field>
+    </command>
+    <command name="get-timeout" code="0x6">
+      <implement role="server" handle="MAY"/>
+      <field name="xid" type="xid" required="true">
+        <exception name="unknown-xid" error-code="not-found"/>
+      </field>
+      <result>
+        <struct name="get-timeout-result" code="0x2" size="4" pack="2">
+          <field name="timeout" type="uint32" required="true"/>
+        </struct>
+      </result>
+    </command>
+    <command name="prepare" code="0x7">
+      <exception name="illegal-state" error-code="illegal-state"/>
+      <rule name="obligation-1"/>
+      <rule name="obligation-2"/>
+      <implement role="server" handle="MAY"/>
+      <field name="xid" type="xid" required="true">
+        <exception name="unknown-xid" error-code="not-found"/>
+        <exception name="not-disassociated" error-code="illegal-state"/>
+      </field>
+      <result type="xa-result"/>
+    </command>
+    <command name="recover" code="0x8">
+      <implement role="server" handle="MAY"/>
+      <result>
+        <struct name="recover-result" code="0x3" size="4" pack="2">
+          <field name="in-doubt" type="array" required="true"/>
+        </struct>
+      </result>
+    </command>
+    <command name="rollback" code="0x9">
+      <exception name="illegal-state" error-code="illegal-state"/>
+      <implement role="server" handle="MAY"/>
+      <field name="xid" type="xid" required="true">
+        <exception name="unknown-xid" error-code="not-found"/>
+        <exception name="not-disassociated" error-code="illegal-state"/>
+      </field>
+      <result type="xa-result"/>
+    </command>
+    <command name="set-timeout" code="0xa">
+      <rule name="effective"/>
+      <rule name="reset"/>
+      <implement role="server" handle="MAY"/>
+      <field name="xid" type="xid" required="true">
+        <exception name="unknown-xid" error-code="not-found"/>
+      </field>
+      <field name="timeout" type="uint32" required="true"/>
+    </command>
+  </class>
+  <class name="exchange" code="0x7">
+    <rule name="required-types"/>
+    <rule name="recommended-types"/>
+    <rule name="required-instances"/>
+    <rule name="default-exchange"/>
+    <rule name="default-access"/>
+    <rule name="extensions"/>
+    <role name="server" implement="MUST"/>
+    <role name="client" implement="MUST"/>
+    <domain name="name" type="str8"/>
+    <command name="declare" code="0x1">
+      <rule name="minimum"/>
+      <implement role="server" handle="MUST"/>
+      <field name="exchange" type="name" required="true">
+        <exception name="reserved-names" error-code="not-allowed"/>
+        <exception name="exchange-name-required" error-code="invalid-argument"/>
+      </field>
+      <field name="type" type="str8" required="true">
+        <exception name="typed" error-code="not-allowed"/>
+        <exception name="exchange-type-not-found" error-code="not-found"/>
+      </field>
+      <field name="alternate-exchange" type="name">
+        <rule name="empty-name"/>
+        <exception name="pre-existing-exchange" error-code="not-allowed"/>
+        <rule name="double-failure"/>
+      </field>
+      <field name="passive" type="bit">
+        <exception name="not-found" error-code="not-found"/>
+      </field>
+      <field name="durable" type="bit">
+        <rule name="support"/>
+        <rule name="sticky"/>
+      </field>
+      <field name="auto-delete" type="bit">
+        <rule name="sticky"/>
+      </field>
+      <field name="arguments" type="map">
+        <exception name="unknown-argument" error-code="not-implemented"/>
+      </field>
+    </command>
+    <command name="delete" code="0x2">
+      <implement role="server" handle="MUST"/>
+      <field name="exchange" type="name" required="true">
+        <exception name="exists" error-code="not-found"/>
+        <exception name="exchange-name-required" error-code="invalid-argument"/>
+        <exception name="used-as-alternate" error-code="not-allowed"/>
+      </field>
+      <field name="if-unused" type="bit">
+        <exception name="exchange-in-use" error-code="precondition-failed"/>
+      </field>
+    </command>
+    <command name="query" code="0x3">
+      <implement role="server" handle="MUST"/>
+      <field name="name" type="str8"/>
+      <result>
+        <struct name="exchange-query-result" code="0x1" size="4" pack="2">
+          <field name="type" type="str8"/>
+          <field name="durable" type="bit"/>
+          <field name="not-found" type="bit"/>
+          <field name="arguments" type="map"/>
+        </struct>
+      </result>
+    </command>
+    <command name="bind" code="0x4">
+      <rule name="duplicates"/>
+      <rule name="durable-exchange"/>
+      <rule name="binding-count"/>
+      <rule name="multiple-bindings"/>
+      <implement role="server" handle="MUST"/>
+      <field name="queue" type="queue.name" required="true">
+        <exception name="empty-queue" error-code="invalid-argument"/>
+        <exception name="queue-existence" error-code="not-found"/>
+      </field>
+      <field name="exchange" type="name" required="true">
+        <exception name="exchange-existence" error-code="not-found"/>
+        <exception name="exchange-name-required" error-code="invalid-argument"/>
+      </field>
+      <field name="binding-key" type="str8" required="true"/>
+      <field name="arguments" type="map">
+        <exception name="unknown-argument" error-code="not-implemented"/>
+      </field>
+    </command>
+    <command name="unbind" code="0x5">
+      <implement role="server" handle="MUST"/>
+      <field name="queue" type="queue.name" required="true">
+        <exception name="non-existent-queue" error-code="not-found"/>
+      </field>
+      <field name="exchange" type="name" required="true">
+        <exception name="non-existent-exchange" error-code="not-found"/>
+        <exception name="exchange-name-required" error-code="invalid-argument"/>
+      </field>
+      <field name="binding-key" type="str8" required="true">
+        <exception name="non-existent-binding-key" error-code="not-found"/>
+      </field>
+    </command>
+    <command name="bound" code="0x6">
+      <implement role="server" handle="MUST"/>
+      <field name="exchange" type="str8"/>
+      <field name="queue" type="str8" required="true"/>
+      <field name="binding-key" type="str8"/>
+      <field name="arguments" type="map"/>
+      <result>
+        <struct name="exchange-bound-result" code="0x2" size="4" pack="2">
+          <field name="exchange-not-found" type="bit"/>
+          <field name="queue-not-found" type="bit"/>
+          <field name="queue-not-matched" type="bit"/>
+          <field name="key-not-matched" type="bit"/>
+          <field name="args-not-matched" type="bit"/>
+        </struct>
+      </result>
+    </command>
+  </class>
+  <class name="queue" code="0x8">
+    <rule name="any-content"/>
+    <role name="server" implement="MUST"/>
+    <role name="client" implement="MUST"/>
+    <domain name="name" type="str8"/>
+    <command name="declare" code="0x1">
+      <rule name="default-binding"/>
+      <rule name="minimum-queues"/>
+      <implement role="server" handle="MUST"/>
+      <field name="queue" type="name" required="true">
+        <exception name="reserved-prefix" error-code="not-allowed"/>
+      </field>
+      <field name="alternate-exchange" type="exchange.name">
+        <exception name="pre-existing-exchange" error-code="not-allowed"/>
+        <exception name="unknown-exchange" error-code="not-found"/>
+      </field>
+      <field name="passive" type="bit">
+        <exception name="passive" error-code="not-found"/>
+      </field>
+      <field name="durable" type="bit">
+        <rule name="persistence"/>
+        <rule name="types"/>
+        <rule name="pre-existence"/>
+      </field>
+      <field name="exclusive" type="bit">
+        <rule name="types"/>
+        <exception name="in-use" error-code="resource-locked"/>
+      </field>
+      <field name="auto-delete" type="bit">
+        <rule name="pre-existence"/>
+      </field>
+      <field name="arguments" type="map">
+        <exception name="unknown-argument" error-code="not-implemented"/>
+      </field>
+    </command>
+    <command name="delete" code="0x2">
+      <implement role="server" handle="MUST"/>
+      <field name="queue" type="name" required="true">
+        <exception name="empty-name" error-code="invalid-argument"/>
+        <exception name="queue-exists" error-code="not-found"/>
+      </field>
+      <field name="if-unused" type="bit">
+        <exception name="if-unused-flag" error-code="precondition-failed"/>
+      </field>
+      <field name="if-empty" type="bit">
+        <exception name="not-empty" error-code="precondition-failed"/>
+      </field>
+    </command>
+    <command name="purge" code="0x3">
+      <rule name="empty"/>
+      <rule name="pending-messages"/>
+      <rule name="purge-recovery"/>
+      <implement role="server" handle="MUST"/>
+      <field name="queue" type="name" required="true">
+        <exception name="empty-name" error-code="invalid-argument"/>
+        <exception name="queue-exists" error-code="not-found"/>
+      </field>
+    </command>
+    <command name="query" code="0x4">
+      <implement role="server" handle="MUST"/>
+      <field name="queue" type="name" required="true"/>
+      <result>
+        <struct name="queue-query-result" code="0x1" size="4" pack="2">
+          <field name="queue" type="name" required="true"/>
+          <field name="alternate-exchange" type="exchange.name"/>
+          <field name="durable" type="bit"/>
+          <field name="exclusive" type="bit"/>
+          <field name="auto-delete" type="bit"/>
+          <field name="arguments" type="map"/>
+          <field name="message-count" type="uint32" required="true"/>
+          <field name="subscriber-count" type="uint32" required="true"/>
+        </struct>
+      </result>
+    </command>
+  </class>
+  <class name="file" code="0x9">
+    <rule name="reliable-storage"/>
+    <rule name="no-discard"/>
+    <rule name="priority-levels"/>
+    <rule name="acknowledgement-support"/>
+    <role name="server" implement="MAY"/>
+    <role name="client" implement="MAY"/>
+    <struct name="file-properties" code="0x1" size="4" pack="2">
+      <field name="content-type" type="str8"/>
+      <field name="content-encoding" type="str8"/>
+      <field name="headers" type="map"/>
+      <field name="priority" type="uint8"/>
+      <field name="reply-to" type="str8"/>
+      <field name="message-id" type="str8"/>
+      <field name="filename" type="str8"/>
+      <field name="timestamp" type="datetime"/>
+      <field name="cluster-id" type="str8"/>
+    </struct>
+    <domain name="return-code" type="uint16">
+      <enum>
+        <choice name="content-too-large" value="311"/>
+        <choice name="no-route" value="312"/>
+        <choice name="no-consumers" value="313"/>
+      </enum>
+    </domain>
+    <command name="qos" code="0x1">
+      <implement role="server" handle="MUST"/>
+      <response name="qos-ok"/>
+      <field name="prefetch-size" type="uint32"/>
+      <field name="prefetch-count" type="uint16">
+        <rule name="prefetch-discretion"/>
+      </field>
+      <field name="global" type="bit"/>
+    </command>
+    <command name="qos-ok" code="0x2">
+      <implement role="client" handle="MUST"/>
+    </command>
+    <command name="consume" code="0x3">
+      <rule name="min-consumers"/>
+      <implement role="server" handle="MUST"/>
+      <response name="consume-ok"/>
+      <field name="queue" type="queue.name">
+        <exception name="queue-exists-if-empty" error-code="not-allowed"/>
+      </field>
+      <field name="consumer-tag" type="str8">
+        <exception name="not-existing-consumer" error-code="not-allowed"/>
+        <exception name="not-empty-consumer-tag" error-code="not-allowed"/>
+      </field>
+      <field name="no-local" type="bit"/>
+      <field name="no-ack" type="bit"/>
+      <field name="exclusive" type="bit">
+        <exception name="in-use" error-code="resource-locked"/>
+      </field>
+      <field name="nowait" type="bit"/>
+      <field name="arguments" type="map"/>
+    </command>
+    <command name="consume-ok" code="0x4">
+      <implement role="client" handle="MUST"/>
+      <field name="consumer-tag" type="str8"/>
+    </command>
+    <command name="cancel" code="0x5">
+      <implement role="server" handle="MUST"/>
+      <field name="consumer-tag" type="str8"/>
+    </command>
+    <command name="open" code="0x6">
+      <implement role="server" handle="MUST"/>
+      <implement role="client" handle="MUST"/>
+      <response name="open-ok"/>
+      <field name="identifier" type="str8"/>
+      <field name="content-size" type="uint64">
+        <rule name="content-size"/>
+      </field>
+    </command>
+    <command name="open-ok" code="0x7">
+      <implement role="server" handle="MUST"/>
+      <implement role="client" handle="MUST"/>
+      <response name="stage"/>
+      <field name="staged-size" type="uint64">
+        <rule name="behavior"/>
+        <rule name="staging"/>
+      </field>
+    </command>
+    <command name="stage" code="0x8">
+      <implement role="server" handle="MUST"/>
+      <implement role="client" handle="MUST"/>
+      <segments>
+        <header required="true">
+          <entry type="file-properties"/>
+        </header>
+        <body/>
+      </segments>
+    </command>
+    <command name="publish" code="0x9">
+      <implement role="server" handle="MUST"/>
+      <field name="exchange" type="exchange.name">
+        <rule name="default"/>
+        <exception name="refusal" error-code="not-implemented"/>
+      </field>
+      <field name="routing-key" type="str8"/>
+      <field name="mandatory" type="bit">
+        <rule name="implementation"/>
+      </field>
+      <field name="immediate" type="bit">
+        <rule name="implementation"/>
+      </field>
+      <field name="identifier" type="str8"/>
+    </command>
+    <command name="return" code="0xa">
+      <implement role="client" handle="MUST"/>
+      <field name="reply-code" type="return-code"/>
+      <field name="reply-text" type="str8"/>
+      <field name="exchange" type="exchange.name"/>
+      <field name="routing-key" type="str8"/>
+      <segments>
+        <header required="true">
+          <entry type="file-properties"/>
+        </header>
+        <body/>
+      </segments>
+    </command>
+    <command name="deliver" code="0xb">
+      <rule name="redelivery-tracking"/>
+      <implement role="client" handle="MUST"/>
+      <field name="consumer-tag" type="str8"/>
+      <field name="delivery-tag" type="uint64">
+        <rule name="non-zero"/>
+      </field>
+      <field name="redelivered" type="bit"/>
+      <field name="exchange" type="exchange.name"/>
+      <field name="routing-key" type="str8"/>
+      <field name="identifier" type="str8"/>
+    </command>
+    <command name="ack" code="0xc">
+      <implement role="server" handle="MUST"/>
+      <field name="delivery-tag" type="uint64">
+        <rule name="session-local"/>
+      </field>
+      <field name="multiple" type="bit">
+        <rule name="validation"/>
+      </field>
+    </command>
+    <command name="reject" code="0xd">
+      <rule name="server-interpretation"/>
+      <rule name="not-selection"/>
+      <implement role="server" handle="MUST"/>
+      <field name="delivery-tag" type="uint64">
+        <rule name="session-local"/>
+      </field>
+      <field name="requeue" type="bit">
+        <rule name="requeue-strategy"/>
+      </field>
+    </command>
+  </class>
+  <class name="stream" code="0xa">
+    <rule name="overflow-discard"/>
+    <rule name="priority-levels"/>
+    <rule name="acknowledgement-support"/>
+    <role name="server" implement="MAY"/>
+    <role name="client" implement="MAY"/>
+    <struct name="stream-properties" code="0x1" size="4" pack="2">
+      <field name="content-type" type="str8"/>
+      <field name="content-encoding" type="str8"/>
+      <field name="headers" type="map"/>
+      <field name="priority" type="uint8"/>
+      <field name="timestamp" type="datetime"/>
+    </struct>
+    <domain name="return-code" type="uint16">
+      <enum>
+        <choice name="content-too-large" value="311"/>
+        <choice name="no-route" value="312"/>
+        <choice name="no-consumers" value="313"/>
+      </enum>
+    </domain>
+    <command name="qos" code="0x1">
+      <implement role="server" handle="MUST"/>
+      <response name="qos-ok"/>
+      <field name="prefetch-size" type="uint32"/>
+      <field name="prefetch-count" type="uint16"/>
+      <field name="consume-rate" type="uint32">
+        <rule name="ignore-prefetch"/>
+        <rule name="drop-by-priority"/>
+      </field>
+      <field name="global" type="bit"/>
+    </command>
+    <command name="qos-ok" code="0x2">
+      <implement role="client" handle="MUST"/>
+    </command>
+    <command name="consume" code="0x3">
+      <rule name="min-consumers"/>
+      <rule name="priority-based-delivery"/>
+      <implement role="server" handle="MUST"/>
+      <response name="consume-ok"/>
+      <field name="queue" type="queue.name">
+        <exception name="queue-exists-if-empty" error-code="not-allowed"/>
+      </field>
+      <field name="consumer-tag" type="str8">
+        <exception name="not-existing-consumer" error-code="not-allowed"/>
+        <exception name="not-empty-consumer-tag" error-code="not-allowed"/>
+      </field>
+      <field name="no-local" type="bit"/>
+      <field name="exclusive" type="bit">
+        <exception name="in-use" error-code="resource-locked"/>
+      </field>
+      <field name="nowait" type="bit"/>
+      <field name="arguments" type="map"/>
+    </command>
+    <command name="consume-ok" code="0x4">
+      <implement role="client" handle="MUST"/>
+      <field name="consumer-tag" type="str8"/>
+    </command>
+    <command name="cancel" code="0x5">
+      <implement role="server" handle="MUST"/>
+      <field name="consumer-tag" type="str8"/>
+    </command>
+    <command name="publish" code="0x6">
+      <implement role="server" handle="MUST"/>
+      <field name="exchange" type="exchange.name">
+        <rule name="default"/>
+        <exception name="refusal" error-code="not-implemented"/>
+      </field>
+      <field name="routing-key" type="str8"/>
+      <field name="mandatory" type="bit">
+        <rule name="implementation"/>
+      </field>
+      <field name="immediate" type="bit">
+        <rule name="implementation"/>
+      </field>
+      <segments>
+        <header required="true">
+          <entry type="stream-properties"/>
+        </header>
+        <body/>
+      </segments>
+    </command>
+    <command name="return" code="0x7">
+      <implement role="client" handle="MUST"/>
+      <field name="reply-code" type="return-code"/>
+      <field name="reply-text" type="str8"/>
+      <field name="exchange" type="exchange.name"/>
+      <field name="routing-key" type="str8"/>
+      <segments>
+        <header required="true">
+          <entry type="stream-properties"/>
+        </header>
+        <body/>
+      </segments>
+    </command>
+    <command name="deliver" code="0x8">
+      <implement role="client" handle="MUST"/>
+      <field name="consumer-tag" type="str8"/>
+      <field name="delivery-tag" type="uint64">
+        <rule name="session-local"/>
+      </field>
+      <field name="exchange" type="exchange.name"/>
+      <field name="queue" type="queue.name" required="true"/>
+      <segments>
+        <header required="true">
+          <entry type="stream-properties"/>
+        </header>
+        <body/>
+      </segments>
+    </command>
+  </class>
+</amqp>

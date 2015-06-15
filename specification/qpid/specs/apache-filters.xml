@@ -1,0 +1,245 @@
+<!--
+
+   Licensed to the Apache Software Foundation (ASF) under one
+   or more contributor license agreements.  See the NOTICE file
+   distributed with this work for additional information
+   regarding copyright ownership.  The ASF licenses this file
+   to you under the Apache License, Version 2.0 (the
+   "License"); you may not use this file except in compliance
+   with the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+   Unless required by applicable law or agreed to in writing,
+   software distributed under the License is distributed on an
+   "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+   KIND, either express or implied.  See the License for the
+   specific language governing permissions and limitations
+   under the License.
+-->
+<?xml-stylesheet type="text/xsl" href="amqp.xsl"?>
+
+<amqp name="apache-filters" label="Apache Proposed AMQP 1-0 Filters">
+  <section name="legacy-amqp" title="Legacy AMQP Exchange Binding Support">
+    <doc>
+      <p>
+        Versions of AMQP prior to 1.0 prescribed a model of Exchanges and Queues, where Queues were
+        bound to Exchanges with a binding key whose meaning depended upon the type of the Exchange.
+        In order to allow a consistent mechanism for addressing legacy AMQP Exchanges over AMQP 1.0
+        the following filter types are defined. Use of an Exchange as an address for a Source thus
+        can be seen as equivalent to constructing exclusive queues bound to an Exchange in legacy 
+        AMQP versions.
+      </p>
+      <p>
+        Containers which support the filters that are defined in this section should advertise the
+        capability <term>APACHE.ORG:LEGACY_AMQP_EXCHANGE_FILTERS</term> in their connection
+        capabilities when sending the open performative, and MUST provide this capability on
+        sources supporting these filter types.
+      </p>
+    </doc>
+ 	<type class="restricted" name="legacy-amqp-direct-binding" source="string" provides="filter">
+ 		<descriptor name="apache.org:legacy-amqp-direct-binding:string" 
+                    code="0x0000468C:0x00000000"/>
+        <doc>
+          <p>
+            The legacy-amqp-direct-binding filter consists of a described string value. The filter
+            matches a message if and only if the described string value exactly matches the subject
+            field of the Properties section of the message being evaluated. If the message has no
+            Properties section, or if the subject field of the Properties section is not set, then
+            the legacy-amqp-direct-binding filter does not match.
+          </p>
+        </doc>
+ 	</type>
+
+ 	<type class="restricted" name="legacy-amqp-topic-binding" source="string" provides="filter">
+ 		<descriptor name="apache.org:legacy-amqp-topic-binding:string"
+                    code="0x0000468C:0x00000001"/>
+        <doc>
+          <p>
+            The legacy-amqp-topic-binding filter consists of a described string value. The value
+            value described by the type is interpreted as a pattern to match against the subject
+            field of the Properties section of the message being evaluated.
+          </p>
+          <ul>
+            <li>The pattern is formed using zero or more tokens, with each token delimited by the 
+                "." character. The tokens "#" and "*" have special meanings.</li>
+            <li>The token consisting of the single character "*" matches a single word in the 
+                subject field.</li>
+            <li>The token consisting of the single character "#" matches zero or more words in the
+                subject field.</li>
+          </ul>
+          <p>
+            Thus the filter value "*.stock.#" would match the subjects "usd.stock" and 
+            "eur.stock.db" but not "stock.nasdaq".
+          </p>
+          <p>
+            If the message has no Properties section, or if the subject field of the Properties
+            section is not set, then the legacy-amqp-topic-binding filter matches only if the value
+            of the filter is a single "#".
+          </p>
+        </doc>
+ 	</type>
+
+ 	<type class="restricted" name="legacy-amqp-headers-binding" source="map" provides="filter"> 
+ 		<descriptor name="apache.org:legacy-amqp-headers-binding:map" code="0x0000468C:0x00000002"/>
+        <doc>
+          <p>
+            The legacy-amqp-headers-binding filter consists of a described map value. The map
+            value described by the type is interpreted as a pattern to match against the 
+            application-properties section of the message being evaluated. The map has the same
+            restriction as the application-properties section, namely that the keys of this are
+            restricted to be of type string (which excludes the possibility of a null key) and the
+            values are restricted to be of simple types only, that is, excluding map, list, and 
+            array types.
+          </p>
+          <p>
+            The key "x-match" in the described map has special meaning. This key MUST map to the
+            symbolic value "any" or the symbolic value "all" within the described map. All other
+            keys which begin "x-" MUST be ignored by the source when evaluating. If the value for
+            "x-match" is "all" then all other valid key-value pairs in the map MUST match with an
+            entry with the same key in the application-properties section. If the value for 
+            "x-match" is "any" then the filter will accept the message if at least one key-value 
+            pair matches the equivalent key value pair in the application-properties section.
+          </p>
+          <p>
+            A key-value pair in the filter's map matches a key-value pair in the 
+            application-properties section if the keys are identical (including the same type), or
+            if the value in the filter map for the key is null.
+          </p>
+        </doc>
+ 	</type>
+  </section>
+  <section name="jms" title="Java Message Service Support"> 
+
+    <doc>
+      <p>
+        The Java Message Service defines two types of filtering of messages: firstly the ability to
+        exclude from a subscription messages sent by the same connection, secondly a more general
+        filtering syntax known as "selectors" based on an SQL like syntax.
+      </p>
+      <p>
+        AMQP filter extensions through which these two types of
+        filtering may be achieved are defined below. Their use, though
+        motivated by support for JMS, is not restricted to JMS.
+      </p>
+    </doc>
+
+	<type class="composite" name="no-local-filter" source="list" provides="filter">
+		<descriptor name="apache.org:no-local-filter:list" code="0x0000468C:0x00000003"/>
+        <doc>
+          <p>
+            A message will be accepted by the simple-no-local-filter if and only if the message
+            was originally sent to the container of the source on a separate connection from that
+            which is currently receiving from the source.
+          </p>
+          <p>
+            Containers which support this filter should advertise the
+            capability <term>APACHE.ORG:NO_LOCAL</term> in their
+            connection capabilities when sending the open
+            performative, and MUST provide this capability on sources
+            supporting these filter types.
+          </p>
+        </doc>
+	</type>
+
+	<type class="restricted" name="selector-filter" provides="filter" source="string">
+		<descriptor name="apache.org:selector-filter:string" code="0x0000468C:0x00000004"/>
+        <doc>
+          <p>
+            The Java Message Service "selector" defines an SQL like
+            syntax for filtering messages.  The selector filters based
+            on the values of "headers" and "properties". The
+            selector-filter uses the selector as defined by JMS but
+            with the names of JMS headers translated into their AMQP
+            equivalents. The defined JMS headers can be mapped to
+            equivalent fields within the AMQP message sections:
+          </p>
+<picture title="Mapping JMS Headers to AMQP fields">
+JMS Header Name   | AMQP 1.0 Field
+==================|====================================================
+JMSCorrelationID  | correlation-id field of properties section
+JMSDeliveryMode   | durable field of header section
+JMSDestination    | to field of the properties section
+JMSExpiration     | absolute-expiry-time of properties section
+JMSMessageID      | message-id of properties section
+JMSPriority       | priority field of header section
+JMSRedelivered    | delivery-count > 0 in header section
+JMSReplyTo        | reply-to in properties section
+JMSTimestamp      | creation-time of properties section
+JMSType           | annotation jms-type in message-annotations section
+</picture>
+        <p>
+          When encoding the selector string on the wire, these JMS
+          header names should be translated to amqp.<i>field_name</i>
+          where <i>field_name</i> is the appropriate AMQP 1.0 field
+          named in the table above, with the hyphen replaced by an
+          underscore. For example, the selector: "JMSCorrelationID =
+          'abc' AND color = 'blue' AND weight > 2500" would be
+          transferred over the wire as: "amqp.correlation_id = 'abc'
+          AND color = 'blue' AND weight > 2500"
+        </p>
+        <p>
+          The "properties" of the JMS message are equivalent to the AMQP application-properties
+          section. Thus a reference to a property Foo in a message selector would be evaluated
+          as the value associated with the key "Foo" (if present) in the application-properties
+          section.
+        </p>
+        <p>
+          The operands of the JMS selector are defined in terms of the types available within JMS,
+          When evaluated against the application properties section, the values within that section
+          MUST be evaluated according to the following type mapping.
+        </p>
+<picture title="Mapping AMQP types to JMS types">
+AMQP Type         | JMS Selector Type
+==================|===================
+null              | null
+boolean           | boolean
+ubyte             | short
+ushort            | int
+uint              | long
+ulong             | long
+byte              | byte
+short             | short
+int               | int
+long              | long
+float             | float
+double            | double
+decimal32         | double
+decimal64         | double
+decimal128        | double
+char              | char
+timestamp         | long
+uuid              | byte[16]
+binary            | byte[]
+string            | String
+symbol            | String
+</picture>
+          <p>
+            Containers which support this filter should advertise the
+            capability <term>APACHE.ORG:SELECTOR</term> in their
+            connection capabilities when sending the open
+            performative, and MUST provide this capability on sources
+            supporting these filter types.
+          </p>
+        </doc>
+	</type>
+  </section>
+  <section name="xquery" title="An xquery based filter">
+      <type class="restricted" name="xquery" source="string" provides="filter">
+          <descriptor name="apache.org:xquery-filter:string" code="0x0000468C:0x00000005"/>
+          <doc>
+            <p>
+            The xquery filter consists of a described string value
+            containing a valid xquery string against which messages
+            are matched.
+            </p>
+            <p>
+            Containers which support the filter defined in this
+            section should advertise the capability
+            <term>APACHE.ORG:XQUERY</term> in their connection
+            capabilities when sending the open performative.
+            </p>
+          </doc>
+     </type>
+ </section>
+</amqp>
