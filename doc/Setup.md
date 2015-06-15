@@ -57,13 +57,30 @@ bramqp.initialize(socket, 'rabbitmq/full/amqp0-9-1.stripped.extended', function(
 
 The following specifications are included in bramqp:
 
+RabbitMQ
+
 - `rabbitmq/full/amqp0-9-1.stripped.extended`
 - `rabbitmq/full/amqp0-9-1.stripped`
 - `rabbitmq/full/amqp0-9.stripped`
 - `rabbitmq/full/amqp0-8.stripped`
 
-Although there are several specifications included in bramqp, only `amqp0-9-1.stripped.extended` is fully supported. 
-All parsers, tutorials and tests are built using this specification.  The `amqp0-9-1.stripped` specification may work as well. 
-However, the others are quite different and will probably not work at all. 
+Qpid
+
+- `qpid/specs/amqp.0-10-qpid-errata.stripped`
+- `qpid/specs/amqp.0-10.stripped`
+- `qpid/specs/amqp0-8-qpid.stripped`
+- `qpid/specs/amqp0-8.stripped`
+- `qpid/specs/amqp0-9-1.stripped`
+- `qpid/specs/amqp0-9-qpid.stripped`
+- `qpid/specs/amqp0-9.stripped`
+- `qpid/specs/amqp-dtx-preview.0-9`
+- `qpid/specs/amqp-errata.0-9`
+- `qpid/specs/amqp-nogen.0-9`
+- `qpid/specs/apache-filters`
+- `qpid/specs/cluster.0-8`
+
+Although there are several specifications included in bramqp, only `rabbitmq/full/amqp0-9-1.stripped.extended` is fully supported.
+All parsers, tutorials and tests are built using this specification.  The `rabbitmq/full/amqp0-9-1.stripped`  and `qpid/specs/amqp0-9-1.stripped` specifications may work as well.
+However, the others may be quite different and will probably not work at all.
 
 For adding new specifications, see [Specification](Specification.md).
