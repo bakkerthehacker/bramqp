@@ -10,7 +10,7 @@ When sending methods to the server, simply call the method.
 
 - `channel` The AMQP channel to send the method on.
 The channel MUST NOT be included when the class is `connection` and MUST be included otherwise.
-- `arguments` The arguments as specified by the AMQP method.
+- `arguments` The arguments as specified by the AMQP method. Reserved arguments are not included.
 - `contentProperties`, `content` [Content](Content.md) can be passed directly to the method and will be written out along with it. 
 - `callback(error)` Called once the method has been written to the socket.
 
