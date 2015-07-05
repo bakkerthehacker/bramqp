@@ -61,6 +61,10 @@ vows.describe('queue').addBatch({
 						setImmediate(seriesCallback);
 					}, function(seriesCallback) {
 						handle.basic.publish(1, '', 'test-queue', false, false, {}, 'Hello World!', seriesCallback);
+					}, function(seriesCallback) {
+						handle.closeAMQPCommunication(function() {
+							handle.socket.end();
+						});
 					} ], function(error) {
 						if (error) {
 							self.callback(error);

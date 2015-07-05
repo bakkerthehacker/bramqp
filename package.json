@@ -20,13 +20,13 @@
 		"url" : "git://github.com/bakkerthehacker/bramqp.git"
 	},
 	"dependencies" : {
-		"async" : "~0.9.0",
+		"async" : "~1.3.0",
 		"xml2js" : "~0.4.4",
 		"buffer-more-ints" : "~0.0.2",
 		"pkginfo" : "~0.3.0"
 	},
 	"devDependencies" : {
-		"vows" : "0.8.0"
+		"vows" : "~0.8.1"
 	},
 	"scripts" : {
 		"test" : "vows --spec"
