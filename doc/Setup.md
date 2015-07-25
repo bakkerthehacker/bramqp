@@ -38,6 +38,10 @@ bramqp.initialize(socket, 'rabbitmq/full/amqp0-9-1.stripped.extended', function(
 
 Example using TLS:
 
+Warning: You must be using node.js >= 0.11 for tls connections to work with bramqp. This is because
+prior to 0.11 the tls socket does not emit a 'connect' event, instead it emits a 'secureConnect'
+event which bramqp does not listen for.
+
 ```javascript
 var tls = require('tls');
 var fs = require('fs');
