@@ -13,7 +13,7 @@ A radical, raw, robust, remarkable, rapid AMQP library for node.js
 - Dynamically loaded specification from xml
 - 100% specification implementation including all extensions
 - Provides direct access to all AMQP methods
-- Support for any duplex stream including TLS/SSL
+- Support for any duplex stream including TLS/SSL (node.js >= 0.11.x required)
 
 ## Drawbacks over existing AMQP libraries
 
