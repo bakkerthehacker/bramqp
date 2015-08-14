@@ -14,13 +14,13 @@ bramqp.initialize(socket, 'rabbitmq/full/amqp0-9-1.stripped.extended', function(
 		handle.openAMQPCommunication('guest', 'guest', true, seriesCallback);
 	}, function(seriesCallback) {
 		handle.exchange.declare(1, 'topic_logs', 'topic');
-		handle.once('exchange.declare-ok', function(channel, method, data) {
+		handle.once('1:exchange.declare-ok', function(channel, method, data) {
 			console.log('exchange declared');
 			seriesCallback();
 		});
 	}, function(seriesCallback) {
 		handle.queue.declare(1, '', false, false, true, false, false, {});
-		handle.once('queue.declare-ok', function(channel, method, data) {
+		handle.once('1:queue.declare-ok', function(channel, method, data) {
 			console.log('queue declared');
 			console.log(data);
 			tempQueueName = data.queue;
@@ -31,7 +31,7 @@ bramqp.initialize(socket, 'rabbitmq/full/amqp0-9-1.stripped.extended', function(
 			}
 			async.each(args, function(bindingKey, eachCallback) {
 				handle.queue.bind(1, data.queue, 'topic_logs', bindingKey, false, {});
-				handle.once('queue.bind-ok', function() {
+				handle.once('1:queue.bind-ok', function() {
 					console.log('queue ' + tempQueueName + ' bound to topic_logs');
 					eachCallback();
 				});
@@ -39,10 +39,10 @@ bramqp.initialize(socket, 'rabbitmq/full/amqp0-9-1.stripped.extended', function(
 		});
 	}, function(seriesCallback) {
 		handle.basic.consume(1, tempQueueName, null, false, true, false, false, {});
-		handle.once('basic.consume-ok', function(channel, method, data) {
+		handle.once('1:basic.consume-ok', function(channel, method, data) {
 			console.log('consuming from queue');
 			console.log(data);
-			handle.on('basic.deliver', function(channel, method, data) {
+			handle.on('1:basic.deliver', function(channel, method, data) {
 				console.log('incomming message');
 				console.log(data);
 				handle.once('content', function(channel, className, properties, content) {

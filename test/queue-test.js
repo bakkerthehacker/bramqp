@@ -30,7 +30,7 @@ vows.describe('queue').addBatch({
 							if (error) {
 								return seriesCallback(error);
 							}
-							handle.once('queue.declare-ok', function(channel, method, data) {
+							handle.once('1:queue.declare-ok', function(channel, method, data) {
 								seriesCallback();
 							});
 						});
@@ -45,12 +45,12 @@ vows.describe('queue').addBatch({
 					async.series([ function(seriesCallback) {
 						handle.basic.consume(1, 'test-queue', null, false, true, false, false, {}, seriesCallback);
 					}, function(seriesCallback) {
-						handle.once('basic.consume-ok', function(channel, method, data) {
+						handle.once('1:basic.consume-ok', function(channel, method, data) {
 							seriesCallback();
 						});
 					}, function(seriesCallback) {
-						handle.on('basic.deliver', function(channel, method, data) {
-							handle.once('content', function(channel, className, properties, content) {
+						handle.on('1:basic.deliver', function(channel, method, data) {
+							handle.once('1:content', function(channel, className, properties, content) {
 								self.callback(null, {
 									className : className,
 									properties : properties,

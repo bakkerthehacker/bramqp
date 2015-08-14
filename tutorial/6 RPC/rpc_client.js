@@ -16,17 +16,17 @@ var FibonacciRpcClient = function(callback) {
 			self.handle.openAMQPCommunication('guest', 'guest', true, seriesCallback);
 		}, function(seriesCallback) {
 			self.handle.queue.declare(1, null, false, false, true, false, false, {});
-			self.handle.once('queue.declare-ok', function(channel, method, data) {
+			self.handle.once('1:queue.declare-ok', function(channel, method, data) {
 				console.log('queue declared');
 				self.callbackQueue = data.queue;
 				seriesCallback();
 			});
 		}, function(seriesCallback) {
 			self.handle.basic.consume(1, self.callbackQueue, null, false, true, false, false, {});
-			self.handle.once('basic.consume-ok', function(channel, method, data) {
+			self.handle.once('1:basic.consume-ok', function(channel, method, data) {
 				console.log('consuming from queue');
 				console.log(data);
-				self.handle.on('basic.deliver', function(channel, method, data) {
+				self.handle.on('1:basic.deliver', function(channel, method, data) {
 					console.log('incomming message');
 					console.log(data);
 					self.handle.once('content', function(channel, className, properties, content) {

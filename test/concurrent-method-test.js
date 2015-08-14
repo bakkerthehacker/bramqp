@@ -42,7 +42,7 @@ var exchangeDeclare = function(i) {
 
 		var ex = 'TestEX-' + i.toString();
 		handle.exchange.declare(1, ex, 'direct', false, false, false, false, false, {}, function() {
-			handle.once('exchange.declare-ok', function() {
+			handle.once('1:exchange.declare-ok', function() {
 				self.callback(null, i);
 			});
 		});
@@ -56,7 +56,7 @@ var queueDeclare = function(i) {
 
 		var q = 'TestQ-' + i.toString();
 		handle.queue.declare(1, q, false, function() {
-			handle.once('queue.declare-ok', function() {
+			handle.once('1:queue.declare-ok', function() {
 				self.callback(null, i);
 			});
 		});

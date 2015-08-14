@@ -22,22 +22,22 @@ bramqp.initialize(socket, 'rabbitmq/full/amqp0-9-1.stripped.extended', function(
 		handle.openAMQPCommunication('guest', 'guest', true, seriesCallback);
 	}, function(seriesCallback) {
 		handle.queue.declare(1, 'rpc_queue');
-		handle.once('queue.declare-ok', function(channel, method, data) {
+		handle.once('1:queue.declare-ok', function(channel, method, data) {
 			console.log('queue declared');
 			seriesCallback();
 		});
 	}, function(seriesCallback) {
 		handle.basic.qos(1, 0, 1, false);
-		handle.once('basic.qos-ok', function(channel, method, data) {
+		handle.once('1:basic.qos-ok', function(channel, method, data) {
 			console.log('qos updated');
 			seriesCallback();
 		});
 	}, function(seriesCallback) {
 		handle.basic.consume(1, 'rpc_queue');
-		handle.once('basic.consume-ok', function(channel, method, data) {
+		handle.once('1:basic.consume-ok', function(channel, method, data) {
 			console.log('consuming from queue');
 			console.log(data);
-			handle.on('basic.deliver', function(channel, method, data) {
+			handle.on('1:basic.deliver', function(channel, method, data) {
 				console.log('incoming message');
 				console.log(data);
 				handle.once('content', function(channel, className, properties, content) {

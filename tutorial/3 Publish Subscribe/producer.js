@@ -12,7 +12,7 @@ bramqp.initialize(socket, 'rabbitmq/full/amqp0-9-1.stripped.extended', function(
 		handle.openAMQPCommunication('guest', 'guest', true, seriesCallback);
 	}, function(seriesCallback) {
 		handle.exchange.declare(1, 'logs', 'fanout', false, false, true, false, false, {});
-		handle.once('exchange.declare-ok', function(channel, method, data) {
+		handle.once('1:exchange.declare-ok', function(channel, method, data) {
 			console.log('exchange declared');
 			seriesCallback();
 		});
@@ -24,7 +24,7 @@ bramqp.initialize(socket, 'rabbitmq/full/amqp0-9-1.stripped.extended', function(
 			});
 		});
 	}, function(seriesCallback) {
-		handle.on('basic.return', function(replyCode, replyText, exchange, routingKey) {
+		handle.on('1:basic.return', function(replyCode, replyText, exchange, routingKey) {
 			console.log('Message Returned from Server');
 			console.log(replyCode);
 			console.log(replyText);

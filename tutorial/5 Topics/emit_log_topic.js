@@ -12,7 +12,7 @@ bramqp.initialize(socket, 'rabbitmq/full/amqp0-9-1.stripped.extended', function(
 		handle.openAMQPCommunication('guest', 'guest', true, seriesCallback);
 	}, function(seriesCallback) {
 		handle.exchange.declare(1, 'topic_logs', 'topic');
-		handle.once('exchange.declare-ok', function(channel, method, data) {
+		handle.once('1:exchange.declare-ok', function(channel, method, data) {
 			console.log('exchange declared');
 			seriesCallback();
 		});
