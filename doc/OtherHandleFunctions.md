@@ -6,7 +6,7 @@ The `handle` provides additional functions which perform common but complicated 
 
 - `username` The username used to log into AMQPLAIN. Defaults to `'guest'`.
 - `password` The password used to log into AMQPLAIN. Defaults to `'guest'`.
-- `heartbeat` A boolean which controls if heartbeats are enabled.  If set to true, heartbeats are sent at the time suggested by the server. Defaults to `true`.
+- `heartbeat` Controls if heartbeats are enabled.  If set to `true`, heartbeats are sent at the time suggested by the server. If set to a number, heartbeats are sent at that number of seconds. Defaults to `true`.
 - `vhost` The vhost used to open the connection. Defaults to `'/'`.
 - `callback(error)` Called once the content has been written to the socket.
 
@@ -20,7 +20,7 @@ The `handle` provides additional functions which perform common but complicated 
 - the socket will be paused and resumed as requested by channel 1
 
 #### handle.closeAMQPCommunication(callback(error))
-  
+
 - `callback(error)` Called once the content has been written to the socket.
 
 `closeAMQPCommunication` performs the following tasks:
@@ -30,7 +30,7 @@ The `handle` provides additional functions which perform common but complicated 
 - stop the heartbeats
 
 #### handle.setFrameMax(frameMax)
-  
+
 - `frameMax` The new largest frame that should be used;
 
 `setFrameMax` updates the size of the buffers used for AMQP communication.  Should be called after receiving `connection.tune` method.
