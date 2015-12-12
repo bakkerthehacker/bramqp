@@ -32,7 +32,7 @@ bramqp.initialize(socket, 'rabbitmq/full/amqp0-9-1.stripped.extended', function(
 			seriesCallback();
 		});
 	}, function(seriesCallback) {
-		handle.basic.consume(1, queueName, false, true, true, false, {});
+		handle.basic.consume(1, queueName, null, false, true, true, false, {});
 		handle.once('1:basic.consume-ok', function(channel, method, data) {
 			console.log('consuming from queue');
 			console.log(data);
