@@ -1,7 +1,6 @@
 # Content
 
-When sending a message, the message body is sent separately as content. It is sent to a class,
-but only the `basic` class supports content. Content is sent after a method that uses it, such as
+When sending a message, the message body is sent separately as content. It is sent to a class, and usually is sent after a method that uses it, such as
 `basic.publish`.
 
 To send content to the server, simply call `content`.
