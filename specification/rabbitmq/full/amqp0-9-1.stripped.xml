@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0"?>
 <!--
 Copyright (c) 2009 AMQP Working Group.
 All rights reserved.
@@ -166,6 +166,15 @@ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
     <method name="close-ok" synchronous="1" index="51">
       <chassis name="client" implement="MUST"/>
       <chassis name="server" implement="MUST"/>
+    </method>
+    <method name="blocked" index="60">
+      <chassis name="server" implement="MUST"/>
+      <chassis name="client" implement="MUST"/>
+      <field name="reason" domain="shortstr" />
+    </method>
+    <method name="unblocked" index="61">
+      <chassis name="server" implement="MUST"/>
+      <chassis name="client" implement="MUST"/>
     </method>
   </class>
   <class name="channel" handler="channel" index="20">
