@@ -1,4 +1,6 @@
-language: node_js
+language:
+  - node_js
+  - python
 node_js:
   - "4.1"
   - "4.0"
@@ -7,3 +9,5 @@ node_js:
   - "0.10"
   - "iojs"
 services: rabbitmq
+before_script:
+  - sudo pip install pre-commit
