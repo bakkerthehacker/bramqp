@@ -1,0 +1,8 @@
+-   repo: git://github.com/scottybarr/pre-commit-js-beautify
+    sha: d5fd80e01c15d2a4184cb648c5f484cbc2ae84d3
+    hooks:
+    -   id: js-beautify
+-   repo: git://github.com/pre-commit/mirrors-jshint
+    sha: c62c18f8ed2a43ef47483a1e0677fc532d228d73
+    hooks:
+    -   id: jshint
