@@ -35,7 +35,7 @@ vows.describe('frameSerializer').addBatch({
 				assert.strictEqual(buffer.used, 1);
 			},
 			'should serialize undefined': function(serialize) {
-				var value = undefined;
+				var value;
 				var buffer = new Buffer(1);
 				buffer.used = 0;
 				serialize(buffer, value);
@@ -72,7 +72,7 @@ vows.describe('frameSerializer').addBatch({
 				assert.strictEqual(buffer.used, 1);
 			},
 			'should serialize undefined': function(serialize) {
-				var value = undefined;
+				var value;
 				var buffer = new Buffer(1);
 				buffer.used = 0;
 				serialize(buffer, value);
@@ -109,7 +109,7 @@ vows.describe('frameSerializer').addBatch({
 				assert.strictEqual(buffer.used, 2);
 			},
 			'should serialize undefined': function(serialize) {
-				var value = undefined;
+				var value;
 				var buffer = new Buffer(2);
 				buffer.used = 0;
 				serialize(buffer, value);
@@ -154,7 +154,7 @@ vows.describe('frameSerializer').addBatch({
 				assert.strictEqual(buffer.used, 2);
 			},
 			'should serialize undefined': function(serialize) {
-				var value = undefined;
+				var value;
 				var buffer = new Buffer(2);
 				buffer.used = 0;
 				serialize(buffer, value);
@@ -191,7 +191,7 @@ vows.describe('frameSerializer').addBatch({
 				assert.strictEqual(buffer.used, 4);
 			},
 			'should serialize undefined': function(serialize) {
-				var value = undefined;
+				var value;
 				var buffer = new Buffer(4);
 				buffer.used = 0;
 				serialize(buffer, value);
@@ -236,7 +236,7 @@ vows.describe('frameSerializer').addBatch({
 				assert.strictEqual(buffer.used, 4);
 			},
 			'should serialize undefined': function(serialize) {
-				var value = undefined;
+				var value;
 				var buffer = new Buffer(4);
 				buffer.used = 0;
 				serialize(buffer, value);
@@ -289,7 +289,7 @@ vows.describe('frameSerializer').addBatch({
 				assert.strictEqual(buffer.used, 8);
 			},
 			'should serialize undefined': function(serialize) {
-				var value = undefined;
+				var value;
 				var buffer = new Buffer(8);
 				buffer.used = 0;
 				serialize(buffer, value);
@@ -350,7 +350,7 @@ vows.describe('frameSerializer').addBatch({
 				assert.strictEqual(buffer.used, 8);
 			},
 			'should serialize undefined': function(serialize) {
-				var value = undefined;
+				var value;
 				var buffer = new Buffer(8);
 				buffer.used = 0;
 				serialize(buffer, value);
@@ -395,7 +395,7 @@ vows.describe('frameSerializer').addBatch({
 				assert.strictEqual(buffer.used, 1);
 			},
 			'should serialize undefined': function(serialize) {
-				var value = undefined;
+				var value;
 				var buffer = new Buffer(1);
 				buffer.used = 0;
 				serialize(buffer, value);
@@ -480,7 +480,7 @@ vows.describe('frameSerializer').addBatch({
 				assert.strictEqual(buffer.used, 4);
 			},
 			'should serialize undefined': function(serialize) {
-				var value = undefined;
+				var value;
 				var buffer = new Buffer(4);
 				buffer.used = 0;
 				serialize(buffer, value);
@@ -581,7 +581,7 @@ vows.describe('frameSerializer').addBatch({
 				assert.strictEqual(buffer.used, 8);
 			},
 			'should serialize undefined': function(serialize) {
-				var value = undefined;
+				var value;
 				var buffer = new Buffer(8);
 				buffer.used = 0;
 				serialize(buffer, value);
@@ -646,7 +646,7 @@ vows.describe('frameSerializer').addBatch({
 				assert.strictEqual(buffer.used, 2);
 			},
 			'should serialize undefined': function(serialize) {
-				var value = undefined;
+				var value;
 				var buffer = new Buffer(1);
 				buffer.used = 0;
 				serialize(buffer, value, 0);
@@ -703,7 +703,7 @@ vows.describe('frameSerializer').addBatch({
 				assert.strictEqual(buffer.used, 5);
 			},
 			'should serialize undefined': function(serialize) {
-				var value = undefined;
+				var value;
 				var buffer = new Buffer(5);
 				buffer.used = 0;
 				serialize(buffer, value);
@@ -732,7 +732,7 @@ vows.describe('frameSerializer').addBatch({
 				assert.strictEqual(buffer.used, 8);
 			},
 			'should serialize undefined': function(serialize) {
-				var value = undefined;
+				var value;
 				var buffer = new Buffer(8);
 				buffer.used = 0;
 				serialize(buffer, value);
@@ -762,7 +762,7 @@ vows.describe('frameSerializer').addBatch({
 				assert.strictEqual(buffer.used, 1);
 			},
 			'should serialize undefined': function(serialize) {
-				var value = undefined;
+				var value;
 				var buffer = new Buffer(1);
 				buffer.used = 0;
 				serialize(buffer, value);
@@ -791,7 +791,7 @@ vows.describe('frameSerializer').addBatch({
 				assert.strictEqual(buffer.used, 4);
 			},
 			'should serialize undefined': function(serialize) {
-				var value = undefined;
+				var value;
 				var buffer = new Buffer(4);
 				buffer.used = 0;
 				serialize(buffer, value);
@@ -820,7 +820,7 @@ vows.describe('frameSerializer').addBatch({
 				assert.strictEqual(buffer.used, 4);
 			},
 			'should serialize undefined': function(serialize) {
-				var value = undefined;
+				var value;
 				var buffer = new Buffer(4);
 				buffer.used = 0;
 				serialize(buffer, value);
@@ -833,7 +833,7 @@ vows.describe('frameSerializer').addBatch({
 				return serializer.serializeVoid.bind(serializer);
 			},
 			'should serialize undefined': function(serialize) {
-				var value = undefined;
+				var value;
 				var buffer = new Buffer(0);
 				buffer.used = 0;
 				serialize(buffer, value);
@@ -868,7 +868,7 @@ vows.describe('frameSerializer').addBatch({
 				assert.strictEqual(buffer.used, 7);
 			},
 			'should serialize undefined': function(serialize) {
-				var value = undefined;
+				var value;
 				var buffer = new Buffer(4);
 				buffer.used = 0;
 				serialize(buffer, value);
@@ -902,7 +902,7 @@ vows.describe('frameSerializer').addBatch({
 				assert.strictEqual(buffer.used, 11);
 			},
 			'should serialize undefined': function(serialize) {
-				var value = undefined;
+				var value;
 				var buffer = new Buffer(4);
 				buffer.used = 0;
 				serialize(buffer, value);
@@ -1083,7 +1083,7 @@ vows.describe('frameSerializer').addBatch({
 				assert.strictEqual(buffer.used, 13);
 			},
 			'should serialize undefined': function(serialize) {
-				var value = undefined;
+				var value;
 				var buffer = new Buffer(1);
 				buffer.used = 0;
 				serialize(buffer, value);
