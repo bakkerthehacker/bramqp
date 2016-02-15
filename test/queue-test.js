@@ -1,29 +1,25 @@
 'use strict';
-
 var vows = require('vows');
 var assert = require('assert');
 var net = require('net');
 var async = require('async');
-
 var bramqp = require('../lib/bramqp');
-
 var puts = require('vows').console.puts({
-	stream : process.stdout
+	stream: process.stdout
 });
-
 vows.describe('queue').addBatch({
-	'A queue' : {
-		'with default options' : {
-			topic : function() {
+	'A queue': {
+		'with default options': {
+			topic: function() {
 				var self = this;
 				var socket = net.connect({
-					port : 5672
+					port: 5672
 				});
 				bramqp.initialize(socket, 'rabbitmq/full/amqp0-9-1.stripped.extended', function(error, handle) {
 					if (error) {
 						return self.callback(error);
 					}
-					async.series([ function(seriesCallback) {
+					async.series([function(seriesCallback) {
 						handle.openAMQPCommunication(seriesCallback);
 					}, function(seriesCallback) {
 						handle.queue.declare(1, 'test-queue', function(error) {
@@ -34,15 +30,15 @@ vows.describe('queue').addBatch({
 								seriesCallback();
 							});
 						});
-					} ], function(error) {
+					}], function(error) {
 						self.callback(error, handle);
 					});
 				});
 			},
-			'with a message' : {
-				topic : function(handle) {
+			'with a message': {
+				topic: function(handle) {
 					var self = this;
-					async.series([ function(seriesCallback) {
+					async.series([function(seriesCallback) {
 						handle.basic.consume(1, 'test-queue', null, false, true, false, false, {}, seriesCallback);
 					}, function(seriesCallback) {
 						handle.once('1:basic.consume-ok', function(channel, method, data) {
@@ -52,9 +48,9 @@ vows.describe('queue').addBatch({
 						handle.on('1:basic.deliver', function(channel, method, data) {
 							handle.once('1:content', function(channel, className, properties, content) {
 								self.callback(null, {
-									className : className,
-									properties : properties,
-									content : content
+									className: className,
+									properties: properties,
+									content: content
 								});
 							});
 						});
@@ -65,13 +61,13 @@ vows.describe('queue').addBatch({
 						handle.closeAMQPCommunication(function() {
 							handle.socket.end();
 						});
-					} ], function(error) {
+					}], function(error) {
 						if (error) {
 							self.callback(error);
 						}
 					});
 				},
-				'should recieve the same message sent to it' : function(message) {
+				'should recieve the same message sent to it': function(message) {
 					assert.strictEqual(message.className, 'basic');
 					assert.instanceOf(message.content, Buffer);
 					assert.strictEqual(message.content.toString(), 'Hello World!');

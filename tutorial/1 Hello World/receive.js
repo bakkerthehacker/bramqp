@@ -1,14 +1,12 @@
 'use strict';
-
 var bramqp = require('bramqp');
 var net = require('net');
 var async = require('async');
-
 var socket = net.connect({
-	port : 5672
+	port: 5672
 });
 bramqp.initialize(socket, 'rabbitmq/full/amqp0-9-1.stripped.extended', function(error, handle) {
-	async.series([ function(seriesCallback) {
+	async.series([function(seriesCallback) {
 		handle.openAMQPCommunication('guest', 'guest', true, seriesCallback);
 	}, function(seriesCallback) {
 		handle.queue.declare(1, 'hello');
@@ -33,7 +31,7 @@ bramqp.initialize(socket, 'rabbitmq/full/amqp0-9-1.stripped.extended', function(
 			});
 			seriesCallback();
 		});
-	} ], function() {
+	}], function() {
 		console.log('all done');
 	});
 });

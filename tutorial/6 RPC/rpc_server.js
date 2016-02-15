@@ -1,9 +1,7 @@
 'use strict';
-
 var bramqp = require('bramqp');
 var net = require('net');
 var async = require('async');
-
 var fib = function(n) {
 	if (n === 0) {
 		return 0;
@@ -13,12 +11,11 @@ var fib = function(n) {
 		return fib(n - 1) + fib(n - 2);
 	}
 };
-
 var socket = net.connect({
-	port : 5672
+	port: 5672
 });
 bramqp.initialize(socket, 'rabbitmq/full/amqp0-9-1.stripped.extended', function(error, handle) {
-	async.series([ function(seriesCallback) {
+	async.series([function(seriesCallback) {
 		handle.openAMQPCommunication('guest', 'guest', true, seriesCallback);
 	}, function(seriesCallback) {
 		handle.queue.declare(1, 'rpc_queue');
@@ -50,7 +47,7 @@ bramqp.initialize(socket, 'rabbitmq/full/amqp0-9-1.stripped.extended', function(
 					var response = fib(n);
 					handle.basic.publish(1, '', properties['reply-to'], false, false, function() {
 						handle.content(1, 'basic', {
-							'correlation-id' : properties['correlation-id']
+							'correlation-id': properties['correlation-id']
 						}, response.toString(), function() {
 							handle.basic.ack(1, data['delivery-tag']);
 						});
@@ -59,7 +56,7 @@ bramqp.initialize(socket, 'rabbitmq/full/amqp0-9-1.stripped.extended', function(
 			});
 			seriesCallback();
 		});
-	} ], function() {
+	}], function() {
 		console.log('all done');
 	});
 });
