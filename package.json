@@ -29,7 +29,9 @@
 		"vows" : "~0.8.1"
 	},
 	"scripts" : {
-		"test" : "vows --spec"
+		"lint" : "pre-commit run --all-files",
+		"test" : "vows --spec",
+		"posttest": "npm run lint"
 	},
 	"engines" : {
 		"node" : ">= 0.10.0"
