@@ -23,7 +23,7 @@
 		"async" : "~1.5.2",
 		"xml2js" : "~0.4.16",
 		"buffer-more-ints" : "~0.0.2",
-		"pkginfo" : "~0.3.1"
+		"pkginfo" : "~0.4.0"
 	},
 	"devDependencies" : {
 		"vows" : "~0.8.1"
