@@ -12,7 +12,7 @@ var FibonacciRpcClient = function(callback) {
 		async.series([function(seriesCallback) {
 			self.handle.openAMQPCommunication('guest', 'guest', true, seriesCallback);
 		}, function(seriesCallback) {
-			self.handle.queue.declare(1, null, false, false, true, false, false, {});
+			self.handle.queue.declare(1, '', false, false, true, false, false, {});
 			self.handle.once('1:queue.declare-ok', function(channel, method, data) {
 				console.log('queue declared');
 				self.callbackQueue = data.queue;
