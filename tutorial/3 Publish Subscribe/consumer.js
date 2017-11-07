@@ -16,7 +16,7 @@ bramqp.initialize(socket, 'rabbitmq/full/amqp0-9-1.stripped.extended', function(
 			seriesCallback();
 		});
 	}, function(seriesCallback) {
-		handle.queue.declare(1, null, false, false, false, true, false, {});
+		handle.queue.declare(1, '', false, false, false, true, false, {});
 		handle.once('1:queue.declare-ok', function(channel, method, data) {
 			console.log('queue declared');
 			queueName = data.queue;
