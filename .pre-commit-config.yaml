@@ -1,8 +1,9 @@
+repos:
 -   repo: git://github.com/bakkerthehacker/pre-commit-js-beautify
     sha: 44f8f75f2d79cb2403b0411005e49838a9108f90
     hooks:
     -   id: js-beautify
 -   repo: git://github.com/pre-commit/mirrors-jshint
-    sha: c62c18f8ed2a43ef47483a1e0677fc532d228d73
+    sha: v2.9.5
     hooks:
     -   id: jshint
