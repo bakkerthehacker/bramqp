@@ -12,7 +12,7 @@ Requiring allows your node application to use bramqp, but you already knew that.
 
 A network socket must be supplied to bramqp. Supplying an existing connection allows bramqp to be as flexible as possible,
 while also not having to worry about security and certificates for AMQPS connections.
-In fact, the socket only needs to implement [stream.Duplex](http://nodejs.org/api/stream.html#stream_class_stream_duplex_1).
+In fact, the socket only needs to implement [stream.Duplex](https://nodejs.org/api/stream.html#stream_class_stream_duplex).
 
 #### bramqp.initialize(socket, specification, [callback(error, handle)])
 
