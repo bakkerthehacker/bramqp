@@ -37,7 +37,7 @@
 		"posttest": "npm run lint"
 	},
 	"engines": {
-		"node": ">= 0.10.0"
+		"node": ">=4.5.0 >=5.10.0"
 	},
 	"readme": ""
 }
