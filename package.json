@@ -1,7 +1,7 @@
 {
 	"name": "bramqp",
-	"version": "0.5.0",
-	"description": "bakkerthehacker's renowned AMQP library",
+	"version": "0.6.0",
+	"description": "bakkerthehacker's rude AMQP library",
 	"keywords": [
 		"amqp",
 		"bramqp"
