@@ -2,6 +2,9 @@ language:
   - node_js
   - python
 node_js:
+  - "10"
+  - "8"
+  - "6"
   - "5"
   - "5.1"
   - "4"
@@ -12,6 +15,8 @@ node_js:
   - "0.11"
   - "0.10"
   - "iojs"
+  - "node"
+  - "lts/*"
 services: rabbitmq
 before_script:
   - sudo pip install pre-commit
