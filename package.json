@@ -23,13 +23,13 @@
 		"url": "git://github.com/bakkerthehacker/bramqp.git"
 	},
 	"dependencies": {
-		"async": "~2.6.0",
+		"async": "~3.1.0",
 		"buffer-more-ints": "~1.0.0",
 		"pkginfo": "~0.4.1",
 		"xml2js": "~0.4.19"
 	},
 	"devDependencies": {
-		"vows": "~0.8.1"
+		"vows": "~0.8.2"
 	},
 	"scripts": {
 		"lint": "pre-commit run --all-files",
@@ -37,7 +37,7 @@
 		"posttest": "npm run lint"
 	},
 	"engines": {
-		"node": ">=4.5.0 >=5.10.0"
+		"node": ">=6"
 	},
 	"readme": ""
 }
