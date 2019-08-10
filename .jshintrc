@@ -16,5 +16,6 @@
 	"trailing" : true,
 	"sub" : true,
 	"node" : true,
-	"esversion": 6
+	"esversion": 6,
+	"indent": 1
 }
