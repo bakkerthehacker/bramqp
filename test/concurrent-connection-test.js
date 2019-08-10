@@ -1,22 +1,22 @@
 'use strict';
-var util = require('util');
-var vows = require('vows');
-var assert = require('assert');
-var net = require('net');
-var bramqp = require('../lib/bramqp');
-var puts = require('vows').console.puts({
+const util = require('util');
+const vows = require('vows');
+const assert = require('assert');
+const net = require('net');
+const bramqp = require('../lib/bramqp');
+const puts = require('vows').console.puts({
 	stream: process.stdout
 });
-var connectAMQP = function() {
-	var self = this;
-	var socket = net.connect({ host: 'localhost', port: 5672 });
+const connectAMQP = function() {
+	const self = this;
+	const socket = net.connect({ host: 'localhost', port: 5672 });
 	bramqp.initialize(socket, 'rabbitmq/full/amqp0-9-1.stripped.extended', function(error, handle) {
 		handle.openAMQPCommunication('guest', 'guest', true, function() {
 			self.callback(null, handle);
 		});
 	});
 };
-var connectVerify = function(handle) {
+const connectVerify = function(handle) {
 	handle.closeAMQPCommunication(function() {
 		handle.socket.end();
 	});

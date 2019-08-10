@@ -1,9 +1,9 @@
 'use strict';
-var bramqp = require('bramqp');
-var net = require('net');
-var async = require('async');
-var tempQueueName;
-var socket = net.connect({
+const bramqp = require('bramqp');
+const net = require('net');
+const async = require('async');
+let tempQueueName;
+const socket = net.connect({
 	port: 5672
 });
 bramqp.initialize(socket, 'rabbitmq/full/amqp0-9-1.stripped.extended', function(error, handle) {
@@ -21,7 +21,7 @@ bramqp.initialize(socket, 'rabbitmq/full/amqp0-9-1.stripped.extended', function(
 			console.log('queue declared');
 			console.log(data);
 			tempQueueName = data.queue;
-			var args = process.argv.splice(2);
+			const args = process.argv.splice(2);
 			if (!args.length) {
 				console.log('Usage: ' + process.argv[0] + ' ' + process.argv[1] + ' [binding key]...');
 				process.exit(1);

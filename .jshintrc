@@ -17,5 +17,6 @@
 	"sub" : true,
 	"node" : true,
 	"esversion": 6,
-	"indent": 1
+	"indent": 1,
+	"-W080": false
 }

@@ -1,14 +1,14 @@
 'use strict';
-var vows = require('vows');
-var assert = require('assert');
-var specification = require('../lib/specification');
-var puts = require('vows').console.puts({
+const vows = require('vows');
+const assert = require('assert');
+const specification = require('../lib/specification');
+const puts = require('vows').console.puts({
 	stream: process.stdout
 });
 vows.describe('specification').addBatch({
 	'The RabbitMQ 0-9-1-extended specification': {
 		topic: function() {
-			var self = this;
+			const self = this;
 			specification.fetchSpecification('rabbitmq/full/amqp0-9-1.stripped.extended', function(error, spec) {
 				self.callback(error, spec);
 			});
@@ -18,7 +18,7 @@ vows.describe('specification').addBatch({
 				return spec.path;
 			},
 			'should match the specification source': function(path) {
-				var sourcePath = 'rabbitmq/full/amqp0-9-1.stripped.extended';
+				const sourcePath = 'rabbitmq/full/amqp0-9-1.stripped.extended';
 				assert.strictEqual(path, sourcePath);
 			}
 		},

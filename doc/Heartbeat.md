@@ -18,7 +18,7 @@ When heartbeats are received from the server, the handle emits an event.
 Example:
 
 ```javascript
-var heartbeatsMissed = 0;
+let heartbeatsMissed = 0;
 
 setInterval(function() {
 	handle.heartbeat(function(heartbeatError) {

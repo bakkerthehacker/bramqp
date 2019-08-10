@@ -1,8 +1,8 @@
 'use strict';
-var bramqp = require('bramqp');
-var net = require('net');
-var async = require('async');
-var socket = net.connect({
+const bramqp = require('bramqp');
+const net = require('net');
+const async = require('async');
+const socket = net.connect({
 	port: 5672
 });
 bramqp.initialize(socket, 'rabbitmq/full/amqp0-9-1.stripped.extended', function(error, handle) {
@@ -15,9 +15,9 @@ bramqp.initialize(socket, 'rabbitmq/full/amqp0-9-1.stripped.extended', function(
 			seriesCallback();
 		});
 	}, function(seriesCallback) {
-		var args = process.argv.splice(2);
-		var severity = args.length ? args.shift() : 'info';
-		var message = args.length ? args.join(' ') : 'Hello World!';
+		const args = process.argv.splice(2);
+		const severity = args.length ? args.shift() : 'info';
+		const message = args.length ? args.join(' ') : 'Hello World!';
 		handle.basic.publish(1, 'direct_logs', severity, false, false, function() {
 			handle.content(1, 'basic', {}, message, seriesCallback);
 		});

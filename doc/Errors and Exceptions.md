@@ -10,7 +10,7 @@ Errors can occur in a variety of different scenarios, and need to be handled acc
 
 Handling Errors in setting up of the connection
 ```javascript
-var socket = net.connect({
+const socket = net.connect({
     port : 5672,
 });
 bramqp.initialize(socket, 'rabbitmq/full/amqp0-9-1.stripped.extended', function(error, handle) {

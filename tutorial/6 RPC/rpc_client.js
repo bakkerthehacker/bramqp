@@ -1,10 +1,10 @@
 'use strict';
-var bramqp = require('bramqp');
-var net = require('net');
-var async = require('async');
-var FibonacciRpcClient = function(callback) {
-	var self = this;
-	var socket = net.connect({
+const bramqp = require('bramqp');
+const net = require('net');
+const async = require('async');
+const FibonacciRpcClient = function(callback) {
+	const self = this;
+	const socket = net.connect({
 		port: 5672
 	});
 	bramqp.initialize(socket, 'rabbitmq/full/amqp0-9-1.stripped.extended', function(error, handle) {
@@ -45,7 +45,7 @@ var FibonacciRpcClient = function(callback) {
 	});
 };
 FibonacciRpcClient.prototype.call = function(n, returnCallback) {
-	var self = this;
+	const self = this;
 	self.response = null;
 	self.corrId = Math.random().toString();
 	self.handle.basic.publish(1, '', 'rpc_queue', false, false, function() {
@@ -53,7 +53,7 @@ FibonacciRpcClient.prototype.call = function(n, returnCallback) {
 			'reply-to': self.callbackQueue,
 			'correlation-id': self.corrId
 		}, n.toString(), function() {
-			var pollResponse = function() {
+			const pollResponse = function() {
 				if (self.response) {
 					returnCallback(parseInt(self.response, 10));
 				} else {
@@ -64,7 +64,7 @@ FibonacciRpcClient.prototype.call = function(n, returnCallback) {
 		});
 	});
 };
-var fibonacciRpc = new FibonacciRpcClient(function() {
+const fibonacciRpc = new FibonacciRpcClient(function() {
 	console.log(' [x] Requesting fib(30)');
 	fibonacciRpc.call(30, function(response) {
 		console.log(' [.] Got ' + response);

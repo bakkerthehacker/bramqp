@@ -6,7 +6,7 @@ Before using bramqp, the module must be required and a socket initialized.
 
 Requiring allows your node application to use bramqp, but you already knew that.
 
-`var bramqp = require('bramqp');`
+`const bramqp = require('bramqp');`
 
 ## Initialize Socket
 
@@ -24,9 +24,9 @@ The `handle` in the callback is used for all further communication involving thi
 Example:
 
 ```javascript
-var net = require('net');
+const net = require('net');
 
-var socket = net.connect({
+const socket = net.connect({
 	port : 5672
 });
 bramqp.initialize(socket, 'rabbitmq/full/amqp0-9-1.stripped.extended', function(initError, handle) {
@@ -39,10 +39,10 @@ bramqp.initialize(socket, 'rabbitmq/full/amqp0-9-1.stripped.extended', function(
 Example using TLS:
 
 ```javascript
-var tls = require('tls');
-var fs = require('fs');
+const tls = require('tls');
+const fs = require('fs');
 
-var socket = tls.connect({
+const socket = tls.connect({
 	port : 5671,
 	key : fs.readFileSync('client-key.pem'),
 	cert : fs.readFileSync('client-cert.pem'),
