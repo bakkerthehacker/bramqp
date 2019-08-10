@@ -2,11 +2,8 @@ language:
   - node_js
   - python
 node_js:
-  - "10"
-  - "8"
-  - "6"
+  - "12"
   - "node"
-  - "lts/*"
 addons:
   apt:
     packages:
