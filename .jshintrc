@@ -14,8 +14,7 @@
 	"undef" : true,
 	"strict" : true,
 	"trailing" : true,
-
 	"sub" : true,
-
-	"node" : true
+	"node" : true,
+	"esversion": 6
 }
