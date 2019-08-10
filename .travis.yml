@@ -7,6 +7,10 @@ node_js:
   - "6"
   - "node"
   - "lts/*"
+addons:
+  apt:
+    packages:
+    - rabbitmq-server
 services: rabbitmq
 before_script:
   - sudo pip install pre-commit
