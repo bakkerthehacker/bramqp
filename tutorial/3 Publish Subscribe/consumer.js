@@ -1,9 +1,9 @@
 'use strict';
-var bramqp = require('bramqp');
-var net = require('net');
-var async = require('async');
-var queueName = '';
-var socket = net.connect({
+const bramqp = require('bramqp');
+const net = require('net');
+const async = require('async');
+let queueName = '';
+const socket = net.connect({
 	port: 5672
 });
 bramqp.initialize(socket, 'rabbitmq/full/amqp0-9-1.stripped.extended', function(error, handle) {

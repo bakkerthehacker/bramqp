@@ -26,7 +26,7 @@ When content is received from the server, the `handle` emits an event.  An optio
 Example:
 
 ```javascript
-var message = JSON.stringify({
+const message = JSON.stringify({
 	key : 'value'
 });
 handle.basic.publish(1, 'exchange-name', 'routing-key', true, false, function(publishError) {

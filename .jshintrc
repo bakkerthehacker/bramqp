@@ -14,8 +14,9 @@
 	"undef" : true,
 	"strict" : true,
 	"trailing" : true,
-
 	"sub" : true,
-
-	"node" : true
+	"node" : true,
+	"esversion": 6,
+	"indent": 1,
+	"-W080": false
 }

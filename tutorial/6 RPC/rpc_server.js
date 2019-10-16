@@ -1,8 +1,8 @@
 'use strict';
-var bramqp = require('bramqp');
-var net = require('net');
-var async = require('async');
-var fib = function(n) {
+const bramqp = require('bramqp');
+const net = require('net');
+const async = require('async');
+const fib = function(n) {
 	if (n === 0) {
 		return 0;
 	} else if (n === 1) {
@@ -11,7 +11,7 @@ var fib = function(n) {
 		return fib(n - 1) + fib(n - 2);
 	}
 };
-var socket = net.connect({
+const socket = net.connect({
 	port: 5672
 });
 bramqp.initialize(socket, 'rabbitmq/full/amqp0-9-1.stripped.extended', function(error, handle) {
@@ -42,9 +42,9 @@ bramqp.initialize(socket, 'rabbitmq/full/amqp0-9-1.stripped.extended', function(
 					console.log(content.toString());
 					console.log('with properties:');
 					console.log(properties);
-					var n = parseInt(content.toString(), 10);
+					const n = parseInt(content.toString(), 10);
 					console.log(' [.] fib(' + n + ')');
-					var response = fib(n);
+					const response = fib(n);
 					handle.basic.publish(1, '', properties['reply-to'], false, false, function() {
 						handle.content(1, 'basic', {
 							'correlation-id': properties['correlation-id']

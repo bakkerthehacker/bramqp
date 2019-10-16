@@ -1,17 +1,17 @@
 'use strict';
-var async = require('async');
-var util = require('util');
-var vows = require('vows');
-var assert = require('assert');
-var net = require('net');
-var bramqp = require('../lib/bramqp');
-var puts = require('vows').console.puts({
+const async = require('async');
+const util = require('util');
+const vows = require('vows');
+const assert = require('assert');
+const net = require('net');
+const bramqp = require('../lib/bramqp');
+const puts = require('vows').console.puts({
 	stream: process.stdout
 });
-var HANDLES = [];
+const HANDLES = [];
 
 function connectAMQP(i, callback) {
-	var socket = net.connect({ host: 'localhost', port: 5672 });
+	const socket = net.connect({ host: 'localhost', port: 5672 });
 	bramqp.initialize(socket, 'rabbitmq/full/amqp0-9-1.stripped.extended', function(error, handle) {
 		handle.openAMQPCommunication('guest', 'guest', true, function() {
 			HANDLES[i] = handle;
@@ -21,7 +21,7 @@ function connectAMQP(i, callback) {
 }
 
 function disconnectAMQP(i, callback) {
-	var handle = HANDLES[i];
+	const handle = HANDLES[i];
 	handle.closeAMQPCommunication(function() {
 		handle.socket.end();
 	});
@@ -30,11 +30,11 @@ function disconnectAMQP(i, callback) {
 function connectAllSeries(callback) {
 	async.eachSeries([0, 1, 2, 3, 4], connectAMQP, callback);
 }
-var exchangeDeclare = function(i) {
+const exchangeDeclare = function(i) {
 	return function() {
-		var self = this;
-		var handle = HANDLES[i];
-		var ex = 'TestEX-' + i.toString();
+		const self = this;
+		const handle = HANDLES[i];
+		const ex = 'TestEX-' + i.toString();
 		handle.exchange.declare(1, ex, 'direct', false, false, false, false, false, {}, function() {
 			handle.once('1:exchange.declare-ok', function() {
 				self.callback(null, i);
@@ -42,11 +42,11 @@ var exchangeDeclare = function(i) {
 		});
 	};
 };
-var queueDeclare = function(i) {
+const queueDeclare = function(i) {
 	return function() {
-		var self = this;
-		var handle = HANDLES[i];
-		var q = 'TestQ-' + i.toString();
+		const self = this;
+		const handle = HANDLES[i];
+		const q = 'TestQ-' + i.toString();
 		handle.queue.declare(1, q, false, function() {
 			handle.once('1:queue.declare-ok', function() {
 				self.callback(null, i);
@@ -54,7 +54,7 @@ var queueDeclare = function(i) {
 		});
 	};
 };
-var verifyDeclare = function(i) {
+const verifyDeclare = function(i) {
 	disconnectAMQP(i);
 };
 vows.describe('concurrent exchange declare').addBatch({

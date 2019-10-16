@@ -1,18 +1,18 @@
 'use strict';
-var vows = require('vows');
-var assert = require('assert');
-var net = require('net');
-var async = require('async');
-var bramqp = require('../lib/bramqp');
-var puts = require('vows').console.puts({
+const vows = require('vows');
+const assert = require('assert');
+const net = require('net');
+const async = require('async');
+const bramqp = require('../lib/bramqp');
+const puts = require('vows').console.puts({
 	stream: process.stdout
 });
 vows.describe('queue').addBatch({
 	'A queue': {
 		'with default options': {
 			topic: function() {
-				var self = this;
-				var socket = net.connect({
+				const self = this;
+				const socket = net.connect({
 					port: 5672
 				});
 				bramqp.initialize(socket, 'rabbitmq/full/amqp0-9-1.stripped.extended', function(error, handle) {
@@ -37,7 +37,7 @@ vows.describe('queue').addBatch({
 			},
 			'with a message': {
 				topic: function(handle) {
-					var self = this;
+					const self = this;
 					async.series([function(seriesCallback) {
 						handle.basic.consume(1, 'test-queue', null, false, true, false, false, {}, seriesCallback);
 					}, function(seriesCallback) {
