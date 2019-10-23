@@ -1,4 +1,4 @@
-# <img src="https://secure.gravatar.com/avatar/5d41671650b9f93a138b64e61c2ad8e4.png" width="28" height="28"> bakkerthehacker's rude AMQP library
+# <img src="https://secure.gravatar.com/avatar/5d41671650b9f93a138b64e61c2ad8e4.png" width="28" height="28"> bakkerthehacker's rewritten AMQP library
 
 A radical, raw, robust, remarkable, rapid AMQP library for node.js
 
