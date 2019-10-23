@@ -1,72 +1,44 @@
 'use strict';
-const bramqp = require('bramqp');
+const bramqp = require('../../lib/bramqp');
+const { once } = require('events');
 const net = require('net');
-const async = require('async');
-const FibonacciRpcClient = function(callback) {
-	const self = this;
-	const socket = net.connect({
-		port: 5672
-	});
-	bramqp.initialize(socket, 'rabbitmq/full/amqp0-9-1.stripped.extended', function(error, handle) {
-		self.handle = handle;
-		async.series([function(seriesCallback) {
-			self.handle.openAMQPCommunication('guest', 'guest', true, seriesCallback);
-		}, function(seriesCallback) {
-			self.handle.queue.declare(1, '', false, false, true, false, false, {});
-			self.handle.once('1:queue.declare-ok', function(channel, method, data) {
-				console.log('queue declared');
-				self.callbackQueue = data.queue;
-				seriesCallback();
-			});
-		}, function(seriesCallback) {
-			self.handle.basic.consume(1, self.callbackQueue, null, false, true, false, false, {});
-			self.handle.once('1:basic.consume-ok', function(channel, method, data) {
-				console.log('consuming from queue');
-				console.log(data);
-				self.handle.on('1:basic.deliver', function(channel, method, data) {
-					console.log('incomming message');
-					console.log(data);
-					self.handle.once('content', function(channel, className, properties, content) {
-						console.log('got a message:');
-						console.log(content.toString());
-						console.log('with properties:');
-						console.log(properties);
-						if (self.corrId === properties['correlation-id']) {
-							self.response = content.toString();
-						}
-					});
-				});
-				seriesCallback();
-			});
-		}], function() {
-			console.log('all done');
-			callback();
+class FibonacciRpcClient {
+	async init() {
+		const socket = net.connect({
+			port: 5672
 		});
-	});
-};
-FibonacciRpcClient.prototype.call = function(n, returnCallback) {
-	const self = this;
-	self.response = null;
-	self.corrId = Math.random().toString();
-	self.handle.basic.publish(1, '', 'rpc_queue', false, false, function() {
-		self.handle.content(1, 'basic', {
-			'reply-to': self.callbackQueue,
-			'correlation-id': self.corrId
-		}, n.toString(), function() {
-			const pollResponse = function() {
-				if (self.response) {
-					returnCallback(parseInt(self.response, 10));
-				} else {
-					setImmediate(pollResponse);
-				}
-			};
-			setImmediate(pollResponse);
-		});
-	});
-};
-const fibonacciRpc = new FibonacciRpcClient(function() {
+		this.handle = await bramqp.initialize(socket, 'rabbitmq/amqp0-9-1.stripped.extended');
+		await this.handle.openAMQPCommunication('guest', 'guest', true);
+		let { send, receive } = this.handle.channel(1);
+		let { fieldData } = await send.queue.declare('', false, false, true, false, false, {});
+		console.log('queue declared');
+		this.callbackQueue = fieldData.queue;
+		await send.basic.consume(this.callbackQueue, '', false, true, false, false, {});
+		console.log('consuming from queue');
+	}
+	async call(n) {
+		this.response = null;
+		this.corrId = Math.random().toString();
+		await this.handle.channel(1).send.basic.publish('', 'rpc_queue', false, false, {
+			'reply-to': this.callbackQueue,
+			'correlation-id': this.corrId
+		}, n.toString());
+		while (this.response === null) {
+			let [{ body, header }] = await once(this.handle.channel(1).receive.basic, 'deliver');
+			console.log('got a message:');
+			if (this.corrId === header['correlation-id']) {
+				this.response = body.toString();
+				await this.handle.closeAMQPCommunication();
+				this.handle.socket.destroy();
+				return this.response;
+			}
+		}
+	}
+}
+async function main() {
+	const fibonacciRpc = new FibonacciRpcClient();
+	await fibonacciRpc.init();
 	console.log(' [x] Requesting fib(30)');
-	fibonacciRpc.call(30, function(response) {
-		console.log(' [.] Got ' + response);
-	});
-});
+	console.log(' [.] Got ' + await fibonacciRpc.call(30));
+}
+main();

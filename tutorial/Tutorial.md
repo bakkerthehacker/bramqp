@@ -8,3 +8,4 @@ These tutorials simply provide bramqp implementations of the [RabbitMQ tutorials
 4. [Routing](4%20Routing)
 5. [Topics](5%20Topics)
 6. [RPC](6%20RPC)
+7. [Publisher Confirms](7%20Publisher%20Confirms)

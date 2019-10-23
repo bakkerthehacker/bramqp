@@ -1,47 +1,26 @@
 'use strict';
-const bramqp = require('bramqp');
+const bramqp = require('../../lib/bramqp');
 const net = require('net');
-const async = require('async');
-const socket = net.connect({
-	port: 5672
-});
-bramqp.initialize(socket, 'rabbitmq/full/amqp0-9-1.stripped.extended', function(error, handle) {
-	async.series([function(seriesCallback) {
-		handle.openAMQPCommunication('guest', 'guest', true, seriesCallback);
-	}, function(seriesCallback) {
-		handle.exchange.declare(1, 'logs', 'fanout', false, false, true, false, false, {});
-		handle.once('1:exchange.declare-ok', function(channel, method, data) {
-			console.log('exchange declared');
-			seriesCallback();
-		});
-	}, function(seriesCallback) {
-		handle.basic.publish(1, 'logs', 'logKey', true, false, function() {
-			handle.content(1, 'basic', {}, 'basic', function() {
-				console.log('message published');
-				seriesCallback();
-			});
-		});
-	}, function(seriesCallback) {
-		handle.on('1:basic.return', function(replyCode, replyText, exchange, routingKey) {
-			console.log('Message Returned from Server');
-			console.log(replyCode);
-			console.log(replyText);
-			console.log(exchange);
-		});
-		seriesCallback();
-	}, function(seriesCallback) {
-		setTimeout(function() {
-			console.log('close communication');
-			handle.closeAMQPCommunication(seriesCallback);
-		}, 10 * 1000);
-	}, function(seriesCallback) {
-		console.log('socket ended');
-		handle.socket.end();
-		setImmediate(seriesCallback);
-	}], function(err) {
-		if (err) {
-			console.log(err);
-		}
-		console.log('all done');
+async function main() {
+	const socket = net.connect({
+		port: 5672
 	});
-});
+	const handle = await bramqp.initialize(socket, 'rabbitmq/amqp0-9-1.stripped.extended');
+	await handle.openAMQPCommunication('guest', 'guest', true);
+	const { send, receive } = handle.channel(1);
+	await send.exchange.declare('logs', 'fanout', false, false, true, false, false, {});
+	console.log('exchange declared');
+	send.basic.publish('logs', 'logKey', true, false, {}, 'basic');
+	console.log('message published');
+	receive.basic.on('return', function({ fieldData }) {
+		console.log('Message Returned from Server');
+		console.log(fieldData['reply-code']);
+		console.log(fieldData['reply-text']);
+		console.log(fieldData['exchange']);
+	});
+	setTimeout(async() => {
+		await handle.closeAMQPCommunication();
+		handle.socket.destroy();
+	}, 10 * 1000);
+}
+main();

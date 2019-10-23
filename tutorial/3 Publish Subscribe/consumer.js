@@ -1,51 +1,25 @@
 'use strict';
-const bramqp = require('bramqp');
+const bramqp = require('../../lib/bramqp');
 const net = require('net');
-const async = require('async');
-let queueName = '';
-const socket = net.connect({
-	port: 5672
-});
-bramqp.initialize(socket, 'rabbitmq/full/amqp0-9-1.stripped.extended', function(error, handle) {
-	async.series([function(seriesCallback) {
-		handle.openAMQPCommunication('guest', 'guest', true, seriesCallback);
-	}, function(seriesCallback) {
-		handle.exchange.declare(1, 'logs', 'fanout', false, false, true, false, false, {});
-		handle.once('1:exchange.declare-ok', function(channel, method, data) {
-			console.log('exchange declared');
-			seriesCallback();
-		});
-	}, function(seriesCallback) {
-		handle.queue.declare(1, '', false, false, false, true, false, {});
-		handle.once('1:queue.declare-ok', function(channel, method, data) {
-			console.log('queue declared');
-			queueName = data.queue;
-			seriesCallback();
-		});
-	}, function(seriesCallback) {
-		handle.queue.bind(1, queueName, 'logs', null, false, {});
-		handle.once('1:queue.bind-ok', function(channel, method, data) {
-			console.log('queue bound sucessfully');
-			seriesCallback();
-		});
-	}, function(seriesCallback) {
-		handle.basic.consume(1, queueName, null, false, true, true, false, {});
-		handle.once('1:basic.consume-ok', function(channel, method, data) {
-			console.log('consuming from queue');
-			console.log(data);
-			handle.on('1:basic.deliver', function(channel, method, data) {
-				console.log('incoming message');
-				console.log(data);
-				handle.once('content', function(channel, className, properties, content) {
-					console.log('got a message:');
-					console.log(content.toString());
-					console.log('with properties:');
-					console.log(properties);
-					seriesCallback();
-				});
-			});
-		});
-	}], function() {
-		console.log('all done');
+async function main() {
+	const socket = net.connect({
+		port: 5672
 	});
-});
+	const handle = await bramqp.initialize(socket, 'rabbitmq/amqp0-9-1.stripped.extended');
+	await handle.openAMQPCommunication('guest', 'guest', true);
+	const { send, receive } = handle.channel(1);
+	await send.exchange.declare('logs', 'fanout', false, false, true, false, false, {});
+	console.log('exchange declared');
+	let { fieldData } = await send.queue.declare('', false, false, false, true, false, {});
+	console.log('queue declared');
+	let queueName = fieldData.queue;
+	console.log(queueName);
+	await send.queue.bind(queueName, 'logs', '', false, {});
+	console.log('queue bound sucessfully');
+	await send.basic.consume(queueName, '', false, true, true, false, {});
+	console.log('consuming from queue');
+	receive.basic.on('deliver', data => {
+		console.log(`got a message: ${data.body}`);
+	});
+}
+main();

@@ -1,32 +1,19 @@
 'use strict';
-const bramqp = require('bramqp');
+const bramqp = require('../../lib/bramqp');
 const net = require('net');
-const async = require('async');
-const socket = net.connect({
-	port: 5672
-});
-bramqp.initialize(socket, 'rabbitmq/full/amqp0-9-1.stripped.extended', function(error, handle) {
-	async.series([function(seriesCallback) {
-		handle.openAMQPCommunication('guest', 'guest', true, seriesCallback);
-	}, function(seriesCallback) {
-		handle.exchange.declare(1, 'direct_logs', 'direct');
-		handle.once('1:exchange.declare-ok', function(channel, method, data) {
-			console.log('exchange declared');
-			seriesCallback();
-		});
-	}, function(seriesCallback) {
-		const args = process.argv.splice(2);
-		const severity = args.length ? args.shift() : 'info';
-		const message = args.length ? args.join(' ') : 'Hello World!';
-		handle.basic.publish(1, 'direct_logs', severity, false, false, function() {
-			handle.content(1, 'basic', {}, message, seriesCallback);
-		});
-	}, function(seriesCallback) {
-		handle.closeAMQPCommunication(seriesCallback);
-	}, function(seriesCallback) {
-		handle.socket.end();
-		setImmediate(seriesCallback);
-	}], function() {
-		console.log('all done');
+async function main() {
+	const socket = net.connect({
+		port: 5672
 	});
-});
+	const handle = await bramqp.initialize(socket, 'rabbitmq/amqp0-9-1.stripped.extended');
+	await handle.openAMQPCommunication('guest', 'guest', true);
+	const { send } = handle.channel(1);
+	await send.exchange.declare('direct_logs', 'direct');
+	const args = process.argv.splice(2);
+	const severity = args.length ? args.shift() : 'info';
+	const message = args.length ? args.join(' ') : 'Hello World!';
+	await send.basic.publish('direct_logs', severity, false, false, {}, message);
+	await handle.closeAMQPCommunication();
+	handle.socket.destroy();
+}
+main();
