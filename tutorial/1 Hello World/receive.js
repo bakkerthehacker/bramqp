@@ -7,14 +7,15 @@ async function main() {
 	});
 	const handle = await bramqp.initialize(socket, 'rabbitmq/amqp0-9-1.stripped.extended');
 	await handle.openAMQPCommunication('guest', 'guest', true);
-	const { send, receive } = handle.channel(1);
-	await send.queue.declare('hello');
+	let channel = handle.channel(1);
+	await channel.openAMQPChannel();
+	await channel.queue.declare('hello');
 	console.log('queue declared');
-	let { fieldData } = await send.basic.consume('hello', '', false, true, false, false, {});
+	let { data } = await channel.basic.consume('hello', '', false, true, false, false, {});
 	console.log('consuming from queue');
-	console.log(fieldData['consumer-tag']);
-	receive.basic.on('deliver', data => {
-		console.log(`got a message: ${data.body}`);
+	console.log(data['consumer-tag']);
+	channel.basic.deliver.on('data', ({ body }) => {
+		console.log(`got a message: ${body}`);
 	});
 }
 main();
