@@ -26,7 +26,7 @@
 		"async": "~3.1.0",
 		"buffer-more-ints": "~1.0.0",
 		"pkginfo": "~0.4.1",
-		"xml2js": "~0.4.19"
+		"xml2js": "~0.5.0"
 	},
 	"devDependencies": {
 		"vows": "~0.8.2"
